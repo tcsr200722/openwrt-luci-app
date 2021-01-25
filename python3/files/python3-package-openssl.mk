@@ -8,7 +8,7 @@
 define Package/python3-openssl
 $(call Package/python3/Default)
   TITLE:=Python $(PYTHON3_VERSION) SSL module
-  DEPENDS:=+python3-light +libopenssl +ca-bundle
+  DEPENDS:=+python3-light +libopenssl +ca-certs
 endef
 
 $(eval $(call Py3BasePackage,python3-openssl, \
