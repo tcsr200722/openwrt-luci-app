@@ -48,7 +48,6 @@ endif
 
 PKG_SOURCE:=qbittorrent-nox_$(PKG_ARCH)_static.zip
 PKG_SOURCE_URL:=https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases/download/release-$(PKG_VERSION)/
-PKG_BUILD_DIR:=$(BUILD_DIR)/qbittorrent-nox_$(PKG_ARCH)_static
 PKG_HASH:=skip
 
 include $(INCLUDE_DIR)/package.mk
