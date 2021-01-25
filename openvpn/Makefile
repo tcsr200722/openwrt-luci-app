@@ -16,7 +16,7 @@ PKG_SOURCE_URL:=\
 	https://build.openvpn.net/downloads/releases/ \
 	https://swupdate.openvpn.net/community/releases/
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_HASH:=skip
+PKG_HASH:=029a426e44d656cb4e1189319c95fe6fc9864247724f5599d99df9c4c3478fbd
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 

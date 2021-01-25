@@ -1,3 +1,4 @@
+local d = require "luci.dispatcher"
 local appname = "passwall"
 
 m = Map(appname)

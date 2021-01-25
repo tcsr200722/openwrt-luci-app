@@ -13,11 +13,11 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_plugin
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray
 	bool "Include V2ray"
-	default y if i386||x86_64||arm||aarch64
+	default n
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
-	default n
+	default y if i386||x86_64||arm||aarch64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan
 	bool "Include Trojan"
@@ -74,7 +74,7 @@ define Package/luci-app-vssr/install
 	$(INSTALL_DIR) $(1)/
 	cp -pR ./root/* $(1)/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
-	po2lmo ./po/zh-cn/vssr.po $(1)/usr/lib/lua/luci/i18n/vssr.zh-cn.lmo
+	po2lmo ./po/zh_Hans/vssr.po $(1)/usr/lib/lua/luci/i18n/vssr.zh-cn.lmo
 endef
 
 define Package/luci-app-vssr/postinst

@@ -12,7 +12,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/klzgrad/naiveproxy/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=287c5291d0371a0d1e06f08fcb29c1d80da4a07e557fb8d2bf770b357a8eb29a
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_LICENSE:=BSD 3-Clause
@@ -129,11 +129,15 @@ define Build/Compile
 endef
 
 define Package/naiveproxy/conffiles
+/etc/config/naiveproxy
 endef
 
 define Package/naiveproxy/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/out/Release/naive $(1)/usr/bin/naive
+	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d
+	$(INSTALL_CONF) $(CURDIR)/files/naiveproxy.config $(1)/etc/config/naiveproxy
+	$(INSTALL_BIN) $(CURDIR)/files/naiveproxy.init $(1)/etc/init.d/naiveproxy
 endef
 
 $(eval $(call Download,AFDO_PROF))

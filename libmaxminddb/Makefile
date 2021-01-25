@@ -13,7 +13,7 @@ PKG_RELEASE=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/maxmind/libmaxminddb/releases/download/$(PKG_VERSION)/
-PKG_HASH:=skip
+PKG_HASH:=a5fdf6c7b4880fdc7620f8ace5bd5cbe9f65650c9493034b5b9fc7d83551a439
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf

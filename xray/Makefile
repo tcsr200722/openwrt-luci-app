@@ -9,13 +9,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xray
-PKG_VERSION:=
+PKG_VERSION:=1.2.3
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/Xray-core-$(PKG_VERSION)
 PKG_SOURCE:=xray-core-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/XTLS/xray-core/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=1deed281d2b976c0132b57194a09b62a1b978ec1b35d8329894b80f8d47befb7
 
 #PKG_SOURCE_PROTO:=git
 #PKG_SOURCE_URL:=https://github.com/XTLS/xray-core.git
@@ -50,7 +50,7 @@ define Package/$(PKG_NAME)
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Project X
-  DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle
+  DEPENDS:=$(GO_ARCH_DEPENDS) +ca-certificates
 #  PROVIDES:=v2ray
 endef
 

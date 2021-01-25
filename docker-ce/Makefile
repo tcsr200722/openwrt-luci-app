@@ -8,7 +8,7 @@ PKG_LICENSE_FILES:=components/cli/LICENSE components/engine/LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/docker/docker-ce/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=b2ff08675738031b6d6d59a90226657c16726851957c11b5fb85a4598b933b92
 PKG_SOURCE_VERSION:=4484c46d9d # SHA1 used within the docker executables
 
 PKG_MAINTAINER:=Gerard Ryan <G.M0N3Y.2503@gmail.com>
@@ -43,7 +43,7 @@ define Package/docker-ce
   CATEGORY:=Utilities
   TITLE:=Docker Community Edition
   URL:=https://www.docker.com/
-  DEPENDS:=$(GO_ARCH_DEPENDS) @(aarch64||arm||x86_64) +btrfs-progs +ca-bundle +cgroupfs-mount +containerd +libdevmapper +libnetwork +tini \
+  DEPENDS:=$(GO_ARCH_DEPENDS) @(aarch64||arm||x86_64) +btrfs-progs +ca-certificates +cgroupfs-mount +containerd +libdevmapper +libnetwork +tini \
            +DOCKER_SECCOMP:libseccomp +iptables-mod-extra +kmod-br-netfilter +kmod-ikconfig +kmod-nf-conntrack-netlink +kmod-nf-ipvs +kmod-veth
   USERID:=docker:docker
   MENU:=1

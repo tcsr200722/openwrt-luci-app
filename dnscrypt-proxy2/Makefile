@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=dnscrypt-proxy-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/DNSCrypt/dnscrypt-proxy/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=c2c9968f07a414e973ec5734f4598d756a35c32beedb18268590ea1355794237
 PKG_BUILD_DIR:=$(BUILD_DIR)/dnscrypt-proxy-$(PKG_VERSION)
 
 PKG_MAINTAINER:=Josef Schlehofer <josef.schlehofer@nic.cz>
@@ -27,7 +27,7 @@ PKG_USE_MIPS16:=0
 GO_PKG:=github.com/DNSCrypt/dnscrypt-proxy
 
 include $(INCLUDE_DIR)/package.mk
-include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
+include ../../lang/golang/golang-package.mk
 
 define Package/dnscrypt-proxy2
   SECTION:=net

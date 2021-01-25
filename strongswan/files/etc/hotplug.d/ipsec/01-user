@@ -1,7 +1,0 @@
-#!/bin/sh
-
-[ -e "/etc/ipsec.user" ] && {
-	. /etc/ipsec.user "$2"
-}
-
-exit 0

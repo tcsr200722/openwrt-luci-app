@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_GIT_COMMIT).tar.gz
 PKG_SOURCE_URL:=https://github.com/jhonathanc/ps3netsrv/releases/download/$(PKG_VERSION)
-PKG_HASH:=skip
+PKG_HASH:=b1df52bab6496d3008019ff76660436c4b24d05c84fc71f293719dbd608f1511
 PKG_INSTALL:=1
 
 PKG_MAINTAINER:=JCorrea

@@ -12,7 +12,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE_URL:=https://github.com/SoftEtherVPN/SoftEtherVPN/releases/download/$(PKG_VERSION)/
 PKG_SOURCE:=softether-vpn-src-$(PKG_VERSION).tar.gz
-PKG_HASH:=skip
+PKG_HASH:=56930110ad5e21a3b7c69008bdb3efd368c0ebafc1d0d97b48a76a3563ec8e24
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/SoftEtherVPN-$(PKG_VERSION)
 PKG_BUILD_DIR:=$(BUILD_DIR)/SoftEtherVPN-$(PKG_VERSION)
