@@ -1,0 +1,26 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -24,8 +24,8 @@ DISTCHECK_CONFIGURE_FLAGS = --disable-ra
+ # (A suitable gitlog-to-changelog script can be found in GnuPG master.)
+ GITLOG_TO_CHANGELOG=gitlog-to-changelog
+ 
+-DIST_SUBDIRS = m4 compat mpi cipher random src doc tests
+-SUBDIRS =         compat mpi cipher random src doc tests
++DIST_SUBDIRS = m4 compat mpi cipher random src
++SUBDIRS =         compat mpi cipher random src
+ 
+ EXTRA_DIST = autogen.sh autogen.rc README.GIT LICENSES      	           \
+              ChangeLog-2011 build-aux/ChangeLog-2011 doc/ChangeLog-2011    \
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -394,8 +394,8 @@ DISTCHECK_CONFIGURE_FLAGS = --disable-ra
+ 
+ # (A suitable gitlog-to-changelog script can be found in GnuPG master.)
+ GITLOG_TO_CHANGELOG = gitlog-to-changelog
+-DIST_SUBDIRS = m4 compat mpi cipher random src doc tests
+-SUBDIRS = compat mpi cipher random src doc tests
++DIST_SUBDIRS = m4 compat mpi cipher random src
++SUBDIRS = compat mpi cipher random src
+ EXTRA_DIST = autogen.sh autogen.rc README.GIT LICENSES      	           \
+              ChangeLog-2011 build-aux/ChangeLog-2011 doc/ChangeLog-2011    \
+              m4/ChangeLog-2011 cipher/ChangeLog-2011 src/ChangeLog-2011    \
