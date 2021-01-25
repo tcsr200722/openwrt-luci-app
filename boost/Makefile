@@ -19,7 +19,7 @@ PKG_SOURCE:=$(PKG_NAME)_$(PKG_SOURCE_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)/$(PKG_NAME)/$(PKG_VERSION) https://dl.bintray.com/boostorg/release/$(PKG_VERSION)/source/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)_$(PKG_SOURCE_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)_$(PKG_SOURCE_VERSION)
-PKG_HASH:=skip
+PKG_HASH:=7f6130bc3cf65f56a618888ce9d5ea704fa10b462be126ad053e80e553d6d8b7
 PKG_LICENSE:=Boost Software License <http://www.boost.org/users/license.html>
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 
@@ -90,10 +90,10 @@ endef
 
 PKG_BUILD_DEPENDS:=boost/host PACKAGE_python:python PACKAGE_python3:python3
 
-include $(TOPDIR)/feeds/packages/lang/python/python-version.mk
+include ../../lang/python/python-version.mk
 BOOST_PYTHON_VER=$(PYTHON_VERSION)
 
-include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
+include ../../lang/python/python3-version.mk
 BOOST_PYTHON3_VER=$(PYTHON3_VERSION)
 
 BOOST_LIBS =

@@ -1,8 +1,5 @@
-local api = require "luci.model.cbi.passwall.api.api"
-local appname = api.appname
-
-f = SimpleForm(appname)
+f = SimpleForm("passwall")
 f.reset = false
 f.submit = false
-f:append(Template(appname .. "/log/log"))
+f:append(Template("passwall/log/log"))
 return f

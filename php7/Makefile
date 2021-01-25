@@ -17,7 +17,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=skip
+PKG_HASH:=409e11bc6a2c18707dfc44bc61c820ddfd81e17481470f3405ee7822d8379903
 
 PKG_FIXUP:=libtool autoreconf
 PKG_BUILD_PARALLEL:=1

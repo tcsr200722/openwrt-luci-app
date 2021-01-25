@@ -608,7 +608,6 @@ header > .container > a[class="brand"]:after {
     content: "\e00e";
    color: #8965e0!important;
 }
-
 .main > .main-left > .nav > .slide > a[data-title="VPN"]:before {
     content: "\e029";
    color: #5F9EA0!important;
@@ -617,11 +616,6 @@ header > .container > a[class="brand"]:after {
 .main > .main-left > .nav > .slide > a[data-title="Services"]:before {
     content: "\e01b";
     color: #11cdef!important;
-}
-
-.main > .main-left > .nav > .slide > a[data-title="Docker"]:before {
-    content: "\e02c";
- color: #00b2ee!important;
 }
 
 .main > .main-left > .nav > .slide > a[data-title="NAS"]:before {
@@ -638,7 +632,6 @@ header > .container > a[class="brand"]:after {
     content: "\e022";
    color: #00FF7F!important;
 }
-
 .main > .main-left > .nav > .slide > a[data-title="QOS"]:before {
     content: "\e00a";
     color: #f3a4b5!important;
@@ -905,7 +898,6 @@ fieldset > .table > .tr:nth-of-type(odd) {
 }
 
 /* fix progress bar */
-#cpu_free > div,
 #swaptotal > div,
 #swapfree > div,
 #swapcache > div,
@@ -920,7 +912,6 @@ fieldset > .table > .tr:nth-of-type(odd) {
     color:#76838f !important;
 }
 
-#cpu_free >  div > div,
 #swaptotal > div > div,
 #swapfree > div > div,
 #swapcache > div > div,
@@ -930,7 +921,7 @@ fieldset > .table > .tr:nth-of-type(odd) {
 #memcache > div > div,
 #memtotal > div > div {
     height: 1.4rem !important;
-    background-color: #3CCC3C !important;
+    background-color: #CCFFFF !important;
 
 }
 

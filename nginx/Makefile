@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://nginx.org/download/
-PKG_HASH:=skip
+PKG_HASH:=305f379da1d5fb5aefa79e45c829852ca6983c7cd2a79328f8e084a324cf0416
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
 PKG_LICENSE:=2-clause BSD-like license
 

@@ -14,7 +14,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/teddysun/v2ray-plugin/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=1276bdc2f03e40219eed2894ff746e4ef5acb8a7f980c163b7a90b0b5b9058e2
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -50,7 +50,7 @@ define Package/$(PKG_NAME)
 	SUBMENU:=Project V
 	TITLE:=SIP003 plugin for shadowsocks, based on v2ray
 	URL:=https://github.com/shadowsocks/v2ray-plugin
-	DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle
+	DEPENDS:=$(GO_ARCH_DEPENDS) +ca-certificates
 endef
 
 define Package/$(PKG_NAME)/description
