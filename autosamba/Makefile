@@ -9,15 +9,15 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autosamba
 PKG_VERSION:=1
-PKG_RELEASE:=11
-PKG_ARCH:=all
+PKG_RELEASE:=12
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/autosamba
   TITLE:=Samba autoconfig hotplug script.
   MAINTAINER:=Lean
-  DEPENDS:=+luci-app-samba +wsdd2
+  DEPENDS:=+luci-app-samba4 +wsdd2
+  PKGARCH:=all
 endef
 
 define Package/autosamba/description

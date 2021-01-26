@@ -6,6 +6,7 @@ PKG_RELEASE=$(PKG_SOURCE_VERSION)
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/coolsnowwolf/tcping
+PKG_MIRROR_HASH:=223649603b5cc521a721d5825ab17f9bd95935e2d650a41f240110b3b4b8449e
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=d890cc1bd8e3951390ceeff1ccb092a5d802850c
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
@@ -15,7 +16,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/tcpping
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libnet-1.2.x
+  DEPENDS:=+libnet-1.2.x +libpcap
   TITLE:=Ping look-alike that uses TCP SYN packets to get around firewalls and ICMP blackholes
 endef
 

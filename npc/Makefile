@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=npc
-PKG_VERSION:=0.26.8
+PKG_VERSION:=0.26.9
 PKG_RELEASE:=1
 
 ifeq ($(ARCH),mipsel)
@@ -25,7 +25,7 @@ endif
 ifeq ($(ARCH),arm)
 	NPC_ARCH:=arm_v7
 	ifeq ($(BOARD),bcm53xx)
-		NPC_ARCH:=arm_v6
+		NPC_ARCH:=arm_v5
   endif
 	ifeq ($(BOARD),kirkwood)
 		NPC_ARCH:=arm_v5
@@ -36,6 +36,7 @@ ifeq ($(ARCH),aarch64)
 endif
 
 PKG_LICENSE:=Apache-2.0
+
 PKG_BUILD_DIR:=$(BUILD_DIR)/npc-$(PKG_VERSION)
 PKG_URL:=https://github.com/ehang-io/nps/releases/download/v$(PKG_VERSION)/linux_$(NPC_ARCH)_client.tar.gz
 PKG_FILE:=nps_linux_$(NPC_ARCH)_client-$(PKG_VERSION).tar.gz
@@ -46,7 +47,7 @@ define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=NPC Client
-	DEPENDS:=
+	DEPENDS:=@(aarch64||arm||i386||mips||mipsel||x86_64)
 	URL:=https://github.com/ehang-io/nps/releases
 endef
 

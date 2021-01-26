@@ -7,12 +7,13 @@ STOP=01
 
 CONFIGURATION=AdGuardHome
 CRON_FILE=/etc/crontabs/root
-EXTRA_COMMANDS="do_redirect testbackup test_crontab force_reload isrunning"
-EXTRA_HELP="        do_redirect 0 or 1\
-        testbackup backup or restore\
-		test_crontab
-		force_reload
-		isrunning"
+
+extra_command "do_redirect" "0 or 1"
+extra_command "testbackup" "backup or restore"
+extra_command "test_crontab"
+extra_command "force_reload"
+extra_command "isrunning"
+
 set_forward_dnsmasq()
 {
 	local PORT="$1"
@@ -49,7 +50,7 @@ stop_forward_dnsmasq()
 	uci del_list dhcp.@dnsmasq[0].server=$addr 2>/dev/null
 	addrlist="`uci get dhcp.@dnsmasq[0].server 2>/dev/null`"
 	if [ -z "$addrlist" ] ; then
-		uci set dhcp.@dnsmasq[0].resolvfile=/tmp/resolv.conf.auto 2>/dev/null
+		uci set dhcp.@dnsmasq[0].resolvfile=/tmp/resolv.conf.d/resolv.conf.auto 2>/dev/null
 		uci delete dhcp.@dnsmasq[0].noresolv 2>/dev/null
 	fi
 	uci commit dhcp

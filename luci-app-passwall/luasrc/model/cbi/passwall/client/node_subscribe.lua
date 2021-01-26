@@ -1,5 +1,4 @@
-local api = require "luci.model.cbi.passwall.api.api"
-local appname = api.appname
+local appname = "passwall"
 
 m = Map(appname)
 
@@ -37,7 +36,7 @@ o = s:option(Button, "_update", translate("Manual subscription"))
 o.inputstyle = "apply"
 function o.write(e, e)
     luci.sys.call("lua /usr/share/" .. appname .. "/subscribe.lua start log > /dev/null 2>&1 &")
-    luci.http.redirect(api.url("log"))
+    luci.http.redirect(luci.dispatcher.build_url("admin", "services", appname, "log"))
 end
 
 ---- Subscribe Delete All
@@ -45,7 +44,7 @@ o = s:option(Button, "_stop", translate("Delete All Subscribe Node"))
 o.inputstyle = "remove"
 function o.write(e, e)
     luci.sys.call("lua /usr/share/" .. appname .. "/subscribe.lua truncate log > /dev/null 2>&1 &")
-    luci.http.redirect(api.url("log"))
+    luci.http.redirect(luci.dispatcher.build_url("admin", "services", appname, "log"))
 end
 
 filter_enabled = s:option(Flag, "filter_enabled", translate("Filter keyword switch"), translate("When checked, below options can only be take effect."))

@@ -1,6 +1,5 @@
 <%
-local api = require "luci.model.cbi.passwall.api.api"
-local brook_version = api.get_brook_version()
+local brook_version = require "luci.model.cbi.passwall.api.api".get_brook_version()
 -%>
 
 <script type="text/javascript">
@@ -73,7 +72,7 @@ local brook_version = api.get_brook_version()
 
 		var ckeckDetailElm = document.getElementById(btn.id + '-detail');
 
-		XHR.get('<%=api.url("brook_check")%>', {
+		XHR.get('<%=url([[admin]], [[services]], [[passwall]], [[brook_check]])%>', {
 			token: tokenStr,
 			arch: ''
 		}, function(x,json) {
@@ -113,7 +112,7 @@ local brook_version = api.get_brook_version()
 
 		addPageNotice_brook();
 
-		var brookUpdateUrl = '<%=api.url("brook_update")%>';
+		var brookUpdateUrl = '<%=url([[admin]], [[services]], [[passwall]], [[brook_update]])%>';
 		// Download file
 		XHR.get(brookUpdateUrl, {
 			token: tokenStr,

@@ -10,20 +10,25 @@
 
 include $(TOPDIR)/rules.mk
 
+QT5_VERSION_MAJOR_MINOR:=5.13
+QT5_VERSION_PATCH:=2
+
 PKG_NAME:=qt5
-PKG_VERSION:=5.13
+PKG_VERSION:=$(QT5_VERSION_MAJOR_MINOR)$(if $(QT5_VERSION_PATCH),.$(QT5_VERSION_PATCH))
 PKG_RELEASE:=2
 
-PKG_SOURCE:=qt-everywhere-src-$(PKG_VERSION).$(PKG_RELEASE).tar.xz
-PKG_SOURCE_URL:= https://mirrors.tuna.tsinghua.edu.cn/qt/archive/qt/$(PKG_VERSION)/$(PKG_VERSION).$(PKG_RELEASE)/single/ \
-		 https://mirrors.ustc.edu.cn/qtproject/archive/qt/$(PKG_VERSION)/$(PKG_VERSION).$(PKG_RELEASE)/single/ \
-		 http://download.qt-project.org/archive/qt/$(PKG_VERSION)/$(PKG_VERSION).$(PKG_RELEASE)/single/
+PKG_SOURCE:=qt-everywhere-src-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=https://mirrors.cloud.tencent.com/qt/archive/qt/$(QT5_VERSION_MAJOR_MINOR)/$(PKG_VERSION)/single/ \
+		https://mirrors.tuna.tsinghua.edu.cn/qt/archive/qt/$(QT5_VERSION_MAJOR_MINOR)/$(PKG_VERSION)/single/ \
+		https://mirrors.ustc.edu.cn/qtproject/archive/qt/$(QT5_VERSION_MAJOR_MINOR)/$(PKG_VERSION)/single/ \
+		http://download.qt-project.org/archive/qt/$(QT5_VERSION_MAJOR_MINOR)/$(PKG_VERSION)/single/
 PKG_HASH:=55e8273536be41f4f63064a79e552a22133848bb419400b6fa8e9fc0dc05de08
 
+PKG_BUILD_DIR=$(BUILD_DIR)/qt-everywhere-src-$(PKG_VERSION)
+
+PKG_BUILD_DEPENDS:=libdouble-conversion pcre2 zlib
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
-
-PKG_BUILD_DIR=$(BUILD_DIR)/qt-everywhere-src-$(PKG_VERSION).$(PKG_RELEASE)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -43,7 +48,7 @@ define Package/qt5/Default
 	SUBMENU:=Qt5
 	TITLE:=qt5
 	URL:=http://qt-project.org
-	DEPENDS:=+librt +libstdcpp +libpthread @!LINUX_2_6_36
+	DEPENDS:=+librt +libstdcpp +libpthread
 endef
 
 define Package/qt5-core
@@ -190,7 +195,7 @@ define Package/qt5-xml/install
 	$(CP) $(PKG_BUILD_DIR)/qtbase/lib/libQt5Xml.so* $(1)/usr/lib
 endef
 
-$(eval $(call BuildPackage,qt5-core,+zlib,+libpcre2-16,+libdouble-conversion))
+$(eval $(call BuildPackage,qt5-core))
 $(eval $(call BuildPackage,qt5-network))
 $(eval $(call BuildPackage,qt5-sql))
 $(eval $(call BuildPackage,qt5-xml))

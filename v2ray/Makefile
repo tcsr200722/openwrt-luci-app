@@ -45,7 +45,7 @@ define Package/$(PKG_NAME)
   URL:=https://www.v2fly.org
   SECTION:=net
   CATEGORY:=Network
-  SUBMENU:=Project V
+  SUBMENU:=Web Servers/Proxies
   DEPENDS:=$(GO_ARCH_DEPENDS) +ca-certificates
 endef
 
@@ -108,8 +108,8 @@ define Build/Prepare
 	$(call Build/Prepare/Default)
 ifneq ($(CONFIG_V2RAY_EXCLUDE_ASSETS),y)
 	# move file to make sure download new file every build
-	mv -f $(DL_DIR)/$(GEOIP_FILE) $(PKG_BUILD_DIR)/geoip.dat
-	mv -f $(DL_DIR)/$(GEOSITE_FILE) $(PKG_BUILD_DIR)/geosite.dat
+	mv -f $(DL_DIR)/$(GEOIP_FILE) $(PKG_BUILD_DIR)/release/config/ geoip.dat
+	mv -f $(DL_DIR)/$(GEOSITE_FILE) $(PKG_BUILD_DIR)/release/config/geosite.dat
 endif
 endef
 
@@ -138,7 +138,7 @@ ifneq ($(CONFIG_V2RAY_EXCLUDE_V2CTL),y)
 endif
 ifneq ($(CONFIG_V2RAY_EXCLUDE_ASSETS),y)
 	$(INSTALL_DIR) $(1)/usr/share/v2ray
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/{geoip,geosite}.dat $(1)/usr/share/v2ray
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/release/config/{geoip,geosite}.dat $(1)/usr/share/v2ray
 endif
 endef
 

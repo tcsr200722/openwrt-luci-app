@@ -115,7 +115,7 @@ update_rules() {
             	 wget 'https://gitee.com/godros/godproxy/raw/master/rules/daily.txt' -q -O $KP_DIR/data/rules/daily.txt
 		 wget 'https://gitee.com/godros/godproxy/raw/master/rules/koolproxy.txt' -q -O $KP_DIR/data/rules/koolproxy.txt
 	         wget 'https://gitee.com/godros/godproxy/raw/master/rules/yhosts.txt' -q -O $KP_DIR/data/rules/yhosts.txt
-            	 wget 'https://godros.coding.net/p/godproxy/d/rulebin/git/raw/master/rules/fanboy.txt' -q -O $KP_DIR/data/rules/fanboy.txt
+            	 wget 'https://god-ros.coding.net/p/godproxy/d/rulebin/git/raw/master/rules/fanboy.txt' -q -O $KP_DIR/data/rules/fanboy.txt
 	         wget 'https://gitee.com/godros/godproxy/raw/master/rules/easylistchina.txt' -q -O $KP_DIR/data/rules/easylistchina.txt
 		 wget 'https://gitee.com/godros/godproxy/raw/master/rules/antiad.txt' -q -O $KP_DIR/data/rules/anti-ad.txt
             	 wget 'https://gitee.com/godros/godproxy/raw/master/rules/mv.txt' -q -O $KP_DIR/data/rules/mv.txt

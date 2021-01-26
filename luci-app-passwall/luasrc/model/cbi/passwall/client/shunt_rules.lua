@@ -1,8 +1,8 @@
-local api = require "luci.model.cbi.passwall.api.api"
-local appname = api.appname
+local d = require "luci.dispatcher"
+local appname = "passwall"
 
 m = Map(appname, "Xray" .. translate("Shunt") .. translate("Rule"))
-m.redirect = api.url()
+m.redirect = d.build_url("admin", "services", appname)
 
 s = m:section(NamedSection, arg[1], "shunt_rules", "")
 s.addremove = false
