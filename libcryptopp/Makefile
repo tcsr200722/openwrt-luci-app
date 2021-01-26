@@ -8,26 +8,26 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libcryptopp
-PKG_VERSION:=8.3.0
+PKG_VERSION:=5.6.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=cryptopp$(subst .,,$(PKG_VERSION)).zip
-PKG_SOURCE_URL:=https://www.cryptopp.com/
-PKG_HASH:=db38a15a6b1c337c665e2ebeb731dd0754b05e45504897d0f2fe4ae9f5ee589a
+PKG_SOURCE_URL:=http://www.cryptopp.com/
+PKG_MD5SUM:=4ee7e5cdd4a45a14756c169eaf2a77fc
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(PKG_NAME)-$(PKG_VERSION)
 
-PKG_FIXUP:=autoreconf
-PKG_INSTALL:=1
+CMAKE_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libcryptopp
   SECTION:=libs
   CATEGORY:=Libraries
   DEPENDS:=+libpthread +libstdcpp
   TITLE:=Crypto++ is library for creating C++ programs which use cryptographic algorithms
-  URL:=https://packages.debian.org/sid/libcrypto++-dev
+  URL:=http://packages.debian.org/sid/libcrypto++-dev
 endef
 
 define Package/package/libcryptopp
@@ -36,13 +36,21 @@ define Package/package/libcryptopp
   abstract base classes.
 endef
 
-UNPACK_CMD=cd $(PKG_BUILD_DIR) && unzip "$(DL_DIR)/$(PKG_SOURCE)"
+#CONFIGURE_ARGS += \
+#	--enable-static \
+#	--enable-shared
 
+#TARGET_LDFLAGS += \
+#	-lpthread
+CMAKE_OPTIONS += -DCMAKE_CXX_FLAGS="$(FPIC)"
+CMAKE_OPTIONS += -DBUILD_STATIC=ON
+CMAKE_OPTIONS += -DBUILD_SHARED=ON
+
+UNPACK_CMD=cd $(PKG_BUILD_DIR) && unzip "$(DL_DIR)/$(PKG_SOURCE)"
 define Build/Prepare
 	$(Build/Prepare/Default)
-	cd $(PKG_BUILD_DIR) && rm -f GNUmakefile GNUmakefile-cross
+	cd $(PKG_BUILD_DIR) && rm -f GNUmakefile GNUmakefile-cross 
 endef
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include/cryptopp
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/cryptopp/* $(1)/usr/include/cryptopp/
