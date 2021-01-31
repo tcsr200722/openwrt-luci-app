@@ -1,10 +1,11 @@
 #
-# Copyright (C) 2020 CTCGFW Project-OpenWrt
+# Copyright (C) 2021 CTCGFW Project-OpenWrt
 # <https://project-openwrt.eu.org>
 #
 # This is free software, licensed under the GNU General Public License v3.
 # See /LICENSE for more information.
 #
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quickjs
@@ -19,8 +20,8 @@ PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=CN_SZTL <cnsztl@project-openwrt.eu.org>
 
-PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
+PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 

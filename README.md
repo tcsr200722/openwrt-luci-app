@@ -22,9 +22,9 @@
 ```
 插件克隆在package目录下的god目录。
 
-3、克隆package里的单个文件，添加代码()
+3、克隆package里的单个文件(建议此法)
 ```bash
-svn co https://github.com/godros/openwrt-luciapps/branches/luci18/luci-app-godproxy ./package/luci-app-godproxy
+svn export --force https://github.com/godros/openwrt-app/branches/luci19/luci-app-godproxy package/diy/luci-app-godproxy
 ```
 ## 感谢诸位大神的开源和贡献。
 ```bash
