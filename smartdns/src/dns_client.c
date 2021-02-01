@@ -184,6 +184,9 @@ struct dns_client {
 	struct list_head dns_server_list;
 	struct dns_server_group *default_group;
 
+	SSL_CTX *ssl_ctx;
+	int ssl_verify_skip;
+
 	/* query list */
 	pthread_mutex_t dns_request_lock;
 	struct list_head dns_request_list;
@@ -850,11 +853,15 @@ static int _dns_client_set_trusted_cert(SSL_CTX *ssl_ctx)
 	}
 
 	if (cafile == NULL && capath == NULL) {
-		if (SSL_CTX_set_default_verify_paths(ssl_ctx) == 0) {
+		if (SSL_CTX_set_default_verify_paths(ssl_ctx)) {
+			cert_path_set = 1;
+		}
+
+		const STACK_OF(X509_NAME) *cas = SSL_CTX_get_client_CA_list(ssl_ctx);
+		if (cas && sk_X509_NAME_num(cas) == 0) {
 			cafile = "/etc/ssl/certs/ca-certificates.crt";
 			capath = "/etc/ssl/certs";
-		} else {
-			cert_path_set = 1;
+			cert_path_set = 0;
 		}
 	}
 
@@ -866,6 +873,47 @@ static int _dns_client_set_trusted_cert(SSL_CTX *ssl_ctx)
 	}
 
 	return 0;
+}
+
+SSL_CTX *_ssl_ctx_get(void)
+{
+	pthread_mutex_lock(&client.server_list_lock);
+	SSL_CTX *ssl_ctx = client.ssl_ctx;
+	if (ssl_ctx) {
+		pthread_mutex_unlock(&client.server_list_lock);
+		return ssl_ctx;
+	}
+
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000L)
+	ssl_ctx = SSL_CTX_new(TLS_client_method());
+#else
+	ssl_ctx = SSL_CTX_new(SSLv23_client_method());
+#endif
+
+	if (ssl_ctx == NULL) {
+		tlog(TLOG_ERROR, "init ssl failed.");
+		goto errout;
+	}
+
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
+	SSL_CTX_set_session_cache_mode(ssl_ctx, SSL_SESS_CACHE_CLIENT);
+	SSL_CTX_sess_set_cache_size(ssl_ctx, DNS_MAX_SERVERS);
+	if (_dns_client_set_trusted_cert(ssl_ctx) != 0) {
+		SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_NONE, NULL);
+		client.ssl_verify_skip = 1;
+	}
+
+	client.ssl_ctx = ssl_ctx;
+	pthread_mutex_unlock(&client.server_list_lock);
+	return client.ssl_ctx;
+errout:
+	
+	pthread_mutex_unlock(&client.server_list_lock);
+	if (ssl_ctx) {
+		SSL_CTX_free(ssl_ctx);
+	}
+
+	return NULL;
 }
 
 /* add dns server information */
@@ -969,24 +1017,14 @@ static int _dns_client_server_add(char *server_ip, char *server_host, int port, 
 
 	/* if server type is TLS, create ssl context */
 	if (server_type == DNS_SERVER_TLS || server_type == DNS_SERVER_HTTPS) {
-#if (OPENSSL_VERSION_NUMBER >= 0x10100000L)
-		server_info->ssl_ctx = SSL_CTX_new(TLS_client_method());
-#else
-		server_info->ssl_ctx = SSL_CTX_new(SSLv23_client_method());
-#endif
-
+		server_info->ssl_ctx = _ssl_ctx_get();
 		if (server_info->ssl_ctx == NULL) {
 			tlog(TLOG_ERROR, "init ssl failed.");
 			goto errout;
 		}
 
-		SSL_CTX_set_options(server_info->ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
-		SSL_CTX_set_session_cache_mode(server_info->ssl_ctx, SSL_SESS_CACHE_CLIENT);
-		SSL_CTX_sess_set_cache_size(server_info->ssl_ctx, 32);
-		if (_dns_client_set_trusted_cert(server_info->ssl_ctx) != 0) {
-			tlog(TLOG_WARN, "disable check certificate for %s.", server_info->ip);
+		if (client.ssl_verify_skip) {
 			server_info->skip_check_cert = 1;
-			SSL_CTX_set_verify(server_info->ssl_ctx, SSL_VERIFY_NONE, NULL);
 		}
 	}
 
@@ -1029,11 +1067,6 @@ errout:
 	if (server_info) {
 		if (server_info->ping_host) {
 			fast_ping_stop(server_info->ping_host);
-		}
-
-		if (server_info->ssl_ctx) {
-			SSL_CTX_free(server_info->ssl_ctx);
-			server_info->ssl_ctx = NULL;
 		}
 
 		pthread_mutex_destroy(&server_info->lock);
@@ -1121,10 +1154,7 @@ static void _dns_client_server_close(struct dns_server_info *server_info)
 		server_info->ssl_session = NULL;
 	}
 
-	if (server_info->ssl_ctx) {
-		SSL_CTX_free(server_info->ssl_ctx);
-		server_info->ssl_ctx = NULL;
-	}
+	server_info->ssl_ctx = NULL;
 }
 
 /* remove all servers information */
@@ -2362,7 +2392,7 @@ static int _dns_client_tls_verify(struct dns_server_info *server_info)
 			pthread_mutex_unlock(&server_info->lock);
 			peer_CN[0] = '\0';
 			_dns_client_tls_get_cert_CN(cert, peer_CN, sizeof(peer_CN));
-			tlog(TLOG_WARN, "peer server %s certificate verify failed", server_info->ip);
+			tlog(TLOG_WARN, "peer server %s certificate verify failed, ret = %ld", server_info->ip, res);
 			tlog(TLOG_WARN, "peer CN: %s", peer_CN);
 			goto errout;
 		}
@@ -3108,6 +3138,7 @@ static void _dns_client_add_pending_servers(void)
 			if (add_success == 0) {
 				tlog(TLOG_WARN, "add pending DNS server %s failed.", pending->host);
 			}
+			list_del_init(&pending->list);
 			_dns_client_server_pending_release_lck(pending);
 		} else {
 			tlog(TLOG_DEBUG, "add pending DNS server %s failed, retry %d...", pending->host, pending->retry_cnt);
@@ -3310,4 +3341,8 @@ void dns_client_exit(void)
 
 	pthread_mutex_destroy(&client.server_list_lock);
 	pthread_mutex_destroy(&client.domain_map_lock);
+	if (client.ssl_ctx) {
+		SSL_CTX_free(client.ssl_ctx);
+		client.ssl_ctx = NULL;
+	}
 }
