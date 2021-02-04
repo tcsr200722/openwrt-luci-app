@@ -17,7 +17,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_SOURCE_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)/$(PKG_NAME)/$(PKG_VERSION) https://dl.bintray.com/boostorg/release/$(PKG_VERSION)/source/
-PKG_HASH:=953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb
+PKG_HASH:=skip
 
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 PKG_LICENSE:=BSL-1.0
@@ -82,7 +82,7 @@ endef
 
 PKG_BUILD_DEPENDS:=boost/host
 
-include ../../lang/python/python3-version.mk
+include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 BOOST_PYTHON3_VER=$(PYTHON3_VERSION)
 
 BOOST_LIBS =

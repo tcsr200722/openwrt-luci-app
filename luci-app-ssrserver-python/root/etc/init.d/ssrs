@@ -36,7 +36,7 @@ load_config() {
 
 start_server() {
 	mkdir -p  /var/etc
-	/usr/bin/python3 \
+	/usr/bin/python \
 	/usr/share/ssr/shadowsocks/server.py  \
 	-c $CONFIG_FILE  \
 	--pid-file $PID_FILE  \
@@ -85,7 +85,7 @@ start() {
 
 stop() {
   del_rule
-	/usr/bin/python3 \
+	/usr/bin/python \
 	/usr/share/ssr/shadowsocks/server.py  \
 	-c $CONFIG_FILE  \
 	--pid-file $PID_FILE  \

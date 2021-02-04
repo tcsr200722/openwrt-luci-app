@@ -8,7 +8,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/docker/cli/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=a663f54a158c6b2b23b253b14bf0de56ff035750098e760319de1edb7f4ae76d
+PKG_HASH:=skip
 PKG_SOURCE_VERSION:=2291f61 # SHA1 used within the docker executable
 
 PKG_MAINTAINER:=Gerard Ryan <G.M0N3Y.2503@gmail.com>

@@ -8,40 +8,48 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=polarssl
-PKG_VERSION:=1.3.22
+SRC_PKG_NAME:=mbedtls
+PKG_VERSION:=1.3.16
 PKG_RELEASE:=1
-
-PKG_SOURCE_NAME:=mbedtls
-PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION)-gpl.tgz
-PKG_SOURCE_URL:=https://tls.mbed.org/download/
-PKG_HASH:=ded041aa4acf9a3e4d0c85bf334b0860135da996e75afdcc3abf22f403d14457
-
-PKG_LICENSE:=GPL-2.0-or-later
-PKG_LICENSE_FILE:=LICENSE
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_NAME)-$(PKG_VERSION)
 PKG_USE_MIPS16:=0
+
+PKG_SOURCE:=$(SRC_PKG_NAME)-$(PKG_VERSION)-gpl.tgz
+PKG_SOURCE_URL:=https://polarssl.org/download/
+PKG_MD5SUM:=66ebbbf67e8a9463041846822b0a1692
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(SRC_PKG_NAME)-$(PKG_VERSION)
+
 PKG_BUILD_PARALLEL:=1
-CMAKE_INSTALL:=1
+PKG_LICENSE:=GPL-2.0+
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-define Package/libpolarssl
-  SECTION:=libs
-  CATEGORY:=Libraries
+define Package/polarssl/Default
   SUBMENU:=SSL
   TITLE:=Embedded SSL
   URL:=http://polarssl.org/
+endef
+
+define Package/polarssl/Default/description
+The aim of the PolarSSL project is to provide a quality, open-source
+cryptographic library written in C and targeted at embedded systems.
+endef
+
+define Package/libpolarssl
+$(call Package/polarssl/Default)
+  SECTION:=libs
+  CATEGORY:=Libraries
+  TITLE+= (library)
   ABI_VERSION:=$(PKG_VERSION)-$(PKG_RELEASE)
 endef
 
 define Package/libpolarssl/description
-  The aim of the PolarSSL project is to provide a quality, open-source
-  cryptographic library written in C and targeted at embedded systems.
-
-  This package contains the PolarSSL library.
+$(call Package/polarssl/Default/description)
+This package contains the PolarSSL library.
 endef
+
+PKG_INSTALL:=1
 
 CMAKE_OPTIONS += \
 	-DCMAKE_BUILD_TYPE:String="Release" \
@@ -50,7 +58,10 @@ CMAKE_OPTIONS += \
 	-DENABLE_PROGRAMS:Bool=OFF \
 
 define Build/InstallDev
-	$(Build/InstallDev/cmake)
+	$(INSTALL_DIR) $(1)/usr/include
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/polarssl $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmbedtls.so.* $(1)/usr/lib/
 	$(LN) libmbedtls.so.$(PKG_VERSION) $(1)/usr/lib/libpolarssl.so
 endef
 

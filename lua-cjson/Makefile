@@ -16,7 +16,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.kyne.com.au/~mark/software/download/
-PKG_HASH:=51bc69cd55931e0cba2ceae39e9efa2483f4292da3a88a1ed470eda829f6c778
+PKG_HASH:=skip
 
 HOST_BUILD_DEPENDS:=lua/host
 

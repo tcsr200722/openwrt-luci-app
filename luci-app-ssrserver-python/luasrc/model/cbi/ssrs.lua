@@ -13,6 +13,7 @@ local n={
 "rc4-md5",
 "rc4-md5-6",
 "chacha20",
+"chacha20-ietf-poly1305",
 }
 local s={
 "origin",

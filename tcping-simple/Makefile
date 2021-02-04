@@ -14,7 +14,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=https://raw.githubusercontent.com/MushrooM93/tcping/b9ee61a5c1d05f228aa70027331556f0c27dd4c2/
 PKG_SOURCE:=tcping.c
-PKG_HASH:=3459b9f15621920dc632b5871da96c62c8a77ad15ee7bfdba4adee29f4eed089
+PKG_HASH:=skip
 PKG_BUILD_DIR:=$(BUILD_DIR)/tcping-$(PKG_VERSION)
 
 PKG_LICENSE:=GPLv3

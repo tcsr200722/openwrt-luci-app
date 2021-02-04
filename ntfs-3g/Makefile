@@ -11,7 +11,7 @@ PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)_ntfsprogs-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://www.tuxera.com/opensource/
-PKG_HASH:=3e5a021d7b761261836dcb305370af299793eedbded731df3d6943802e1262d5
+PKG_HASH:=skip
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=GPL-2.0-only LGPL-2.1-or-later

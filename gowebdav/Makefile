@@ -14,7 +14,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/1715173329/gowebdav/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=64867ab2925c79d8d8ff9851729bafd1270cd72b981e422136fdd4d82dc75506
+PKG_HASH:=skip
 
 PKG_MAINTAINER:=CN_SZTL <cnsztl@project-openwrt.eu.org>
 

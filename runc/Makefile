@@ -8,7 +8,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/opencontainers/runc/tar.gz/v${PKG_VERSION}?
-PKG_HASH:=28378df983a3c586ed3ec8c76a774a9b10f36a0c323590a284b801cce95cc61f
+PKG_HASH:=skip
 PKG_SOURCE_VERSION:=ff819c7e9184c13b7c2607fe6c30ae19403a7aff
 
 PKG_MAINTAINER:=Gerard Ryan <G.M0N3Y.2503@gmail.com>
@@ -21,7 +21,7 @@ PKG_USE_MIPS16:=0
 GO_PKG:=github.com/opencontainers/runc
 
 include $(INCLUDE_DIR)/package.mk
-include ../../lang/golang/golang-package.mk
+include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
 
 define Package/runc
   SECTION:=utils

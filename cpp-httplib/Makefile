@@ -15,7 +15,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/yhirose/cpp-httplib/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=27b7f6346bdeb1ead9d17bd7cea89d9ad491f50f0479081053cc6e5742a89e64
+PKG_HASH:=skip
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE

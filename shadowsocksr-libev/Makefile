@@ -31,8 +31,8 @@ define Package/shadowsocksr-libev
 	DEPENDS:=+libopenssl +libpthread +libpcre +zlib
 endef
 
-Package/shadowsocksr-libev-server = $(Package/shadowsocksr-libev)
-Package/shadowsocksr-libev-alt = $(Package/shadowsocksr-libev)
+Package/shadowsocksr-libev-ssr-server = $(Package/shadowsocksr-libev)
+Package/shadowsocksr-libev-ssr-redir = $(Package/shadowsocksr-libev)
 Package/shadowsocksr-libev-ssr-local = $(Package/shadowsocksr-libev)
 
 CONFIGURE_ARGS += --disable-documentation --disable-ssp --disable-assert
@@ -45,13 +45,13 @@ define Package/shadowsocksr-libev/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/server/ss-check $(1)/usr/bin/ssr-check
 endef
 
-define Package/shadowsocksr-libev-alt/install
+define Package/shadowsocksr-libev-ssr-redir/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ss-redir $(1)/usr/bin/ssr-redir
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/server/ss-check $(1)/usr/bin/ssr-check
 endef
 
-define Package/shadowsocksr-libev-server/install
+define Package/shadowsocksr-libev-ssr-server/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/server/ss-server $(1)/usr/bin/ssr-server
 endef
@@ -63,6 +63,6 @@ define Package/shadowsocksr-libev-ssr-local/install
 endef
 
 $(eval $(call BuildPackage,shadowsocksr-libev))
-$(eval $(call BuildPackage,shadowsocksr-libev-alt))
-$(eval $(call BuildPackage,shadowsocksr-libev-server))
+$(eval $(call BuildPackage,shadowsocksr-libev-ssr-redir))
+$(eval $(call BuildPackage,shadowsocksr-libev-ssr-server))
 $(eval $(call BuildPackage,shadowsocksr-libev-ssr-local))

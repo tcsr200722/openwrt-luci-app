@@ -6,7 +6,7 @@ PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/pupnp
-PKG_HASH:=ecb23d4291968c8a7bdd4eb16fc2250dbacc16b354345a13342d67f571d35ceb
+PKG_HASH:=skip
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=BSD-3-Clause

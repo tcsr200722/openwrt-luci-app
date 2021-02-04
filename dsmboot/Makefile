@@ -12,28 +12,31 @@ PKG_RELEASE:=5967.1
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/dsmboot
+define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=Synology DSM pxeboot from TFTP
+	DEPENDS:=
 endef
 
-define Package/dsmboot/description
-	DSM 5.2 boot from TFTP
+define Package/$(PKG_NAME)/description
+DSM 5.2 boot from TFTP
+endef
+
+define Build/Prepare
+endef
+
+define Build/Configure
 endef
 
 define Build/Compile
-	true
 endef
 
-define Package/dsmboot/install
+define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/root
-	$(CP) ./files/dsm.iso $(1)/root/
-	$(CP) ./files/menu.lst $(1)/root/
-	$(CP) ./files/pxelinux.0 $(1)/root/
-
+	$(INSTALL_DATA) ./files/* $(1)/root/
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/dsmboot $(1)/etc/uci-defaults/yyy-dsmboot
 endef
 
-$(eval $(call BuildPackage,dsmboot))
+$(eval $(call BuildPackage,$(PKG_NAME)))

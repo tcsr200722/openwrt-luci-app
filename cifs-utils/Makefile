@@ -13,7 +13,7 @@ PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.samba.org/pub/linux-cifs/cifs-utils/
-PKG_HASH:=b859239a3f204f8220d3e54ed43bf8109e1ef202042dd87ba87492f8878728d9
+PKG_HASH:=skip
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-3.0-or-later

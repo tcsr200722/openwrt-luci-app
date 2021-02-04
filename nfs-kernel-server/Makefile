@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=nfs-kernel-server
 PKG_VERSION:=2.5.2
 PKG_RELEASE:=1
-PKG_HASH:=09c20d30322e957a6e9547fb5aa742b163c142cd36b244c2485ae0cc3d71d32d
+PKG_HASH:=skip
 
 PKG_SOURCE_URL:=@SF/nfs
 PKG_SOURCE:=nfs-utils-$(PKG_VERSION).tar.xz
