@@ -5,7 +5,7 @@ https://git.alpinelinux.org/aports/tree/main/python2/musl-find_library.patch
 
 --- a/Lib/ctypes/util.py
 +++ b/Lib/ctypes/util.py
-@@ -92,6 +92,8 @@ elif sys.platform.startswith("aix"):
+@@ -83,6 +83,8 @@ if os.name == "posix" and sys.platform =
  elif os.name == "posix":
      # Andreas Degert's find functions, using gcc, /sbin/ldconfig, objdump
      import re, tempfile
@@ -14,7 +14,7 @@ https://git.alpinelinux.org/aports/tree/main/python2/musl-find_library.patch
  
      def _findLib_gcc(name):
          # Run GCC's linker with the -t (aka --trace) option and examine the
-@@ -252,6 +254,57 @@ elif os.name == "posix":
+@@ -243,6 +245,57 @@ elif os.name == "posix":
          def find_library(name, is64 = False):
              return _get_soname(_findLib_crle(name, is64) or _findLib_gcc(name))
  

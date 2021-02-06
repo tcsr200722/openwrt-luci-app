@@ -2,8 +2,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnunet
 
-PKG_VERSION:=0.13.3
-PKG_RELEASE:=4
+PKG_VERSION:=0.11.0
+PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/gnunet
 PKG_HASH:=skip
@@ -11,7 +11,6 @@ PKG_HASH:=skip
 PKG_LICENSE:=AGPL-3.0
 PKG_LICENSE_FILES:=COPYING
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
-PKG_CPE_ID:=cpe:/a:gnunet:gnunet
 
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=gettext-version
@@ -33,15 +32,11 @@ CONFIGURE_ARGS+= \
 	--enable-experimental \
 	--with-extractor=$(STAGING_DIR)/usr \
 	--with-gnutls=$(STAGING_DIR)/usr \
-	$(if $(CONFIG_PACKAGE_$(PKG_NAME)-transport-bluetooth),--with-libbluetooth="$(STAGING_DIR)/usr",--without-libbluetooth) \
 	--with-libgnurl=$(STAGING_DIR)/usr \
-	--with-libogg=$(STAGING_DIR)/usr \
-	--with-libopus=$(STAGING_DIR)/usr \
-	--with-libpulse=$(STAGING_DIR)/usr \
 	--with-libunistring-prefix=$(STAGING_DIR)/usr \
 	--with-microhttpd=$(STAGING_DIR)/usr
 
-# upstream now provides --with-pulseaudio but doesn't detect rpath
+# ToDo: request upstream to provide --with-pulseaudio=...
 TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib/pulseaudio
 
 define Package/gnunet/Default
@@ -54,12 +49,10 @@ endef
 define Package/gnunet
 $(call Package/gnunet/Default)
   TITLE+= - a peer-to-peer framework focusing on security
-  DEPENDS:=+libatomic +libgcrypt +libgpg-error +libidn2 +libltdl +libsodium \
-           +libunistring +librt +zlib $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS:=+libatomic +libgcrypt +libgpg-error +libidn2 +libltdl +libunistring \
+           +librt +zlib $(ICONV_DEPENDS) $(INTL_DEPENDS)
   USERID:=gnunet=958:gnunet=958
   MENU:=1
-  FILE_MODES:=/usr/lib/gnunet/libexec/gnunet-helper-nat-server:root:gnunet:4750 \
-              /usr/lib/gnunet/libexec/gnunet-helper-nat-client:root:gnunet:4750
 endef
 
 define Package/gnunet/description
@@ -86,7 +79,6 @@ define BuildComponent
     $(if $(3),DEFAULT:=y if PACKAGE_gnunet)
     $(if $(USERID_$(1)),USERID:=$(USERID_$(1)))
     $(if $(CONFLICTS_$(1)),CONFLICTS:=$(CONFLICTS_$(1)))
-    $(if $(FILE_MODES_$(1)),FILE_MODES:=$(FILE_MODES_$(1)))
   endef
 
   define Package/gnunet-$(1)/install
@@ -107,7 +99,7 @@ define BuildComponent
 	( if [ "$(PLUGIN_$(1))" ]; then \
 		$(INSTALL_DIR) $$(1)/usr/lib/gnunet ; \
 		for plug in $(PLUGIN_$(1)); do \
-			$(CP) $(PKG_INSTALL_DIR)/usr/lib/gnunet/libgnunet_plugin_$$$$$$$$plug*.so $$(1)/usr/lib/gnunet ; \
+			$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnunet/libgnunet_plugin_$$$$$$$$plug*.so $$(1)/usr/lib/gnunet ; \
 		done \
 	fi )
 
@@ -138,37 +130,37 @@ define Package/gnunet/install
 	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/lib/gnunet/libexec
 	$(INSTALL_DIR) $(1)/usr/share/gnunet/config.d $(1)/usr/share/gnunet/hellos
 
-	( for bin in arm ats cadet core config ecc identity nat nat-auto nat-server nse \
-	    peerinfo peerstore revocation scalarproduct scrypt statistics transport uri; do \
+	( for bin in arm ats ats-new cadet core config ecc identity nat nat-auto nat-server nse \
+	    peerinfo revocation scalarproduct scrypt statistics transport uri; do \
 		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gnunet-$$$$bin $(1)/usr/bin/ ; \
 	done )
 
-	( for lib in arm ats block blockgroup cadet \
-	    core datacache dht dns fragmentation friends hello \
-	    identity natauto natnew nse nt peerinfo peerstore regexblock regex revocation \
-	    scalarproduct set seti setu statistics transport transportapplication \
+	( for lib in arm ats atsapplication atstransport block blockgroup cadet \
+	    core datacache dht dns dnsparser fragmentation friends hello \
+	    identity natauto natnew nse nt peerinfo regexblock regex revocation \
+	    scalarproduct set statistics transport transportaddress \
 	    transportcommunicator transportcore transportmonitor util; do \
 		$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgnunet$$$$lib.so* $(1)/usr/lib/ ; \
 	done )
 
 	( for plug in ats_proportional block_dht block_regex block_revocation transport_unix; do \
-		$(CP) $(PKG_INSTALL_DIR)/usr/lib/gnunet/libgnunet_plugin_$$$$plug*.so $(1)/usr/lib/gnunet ; \
+		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnunet/libgnunet_plugin_$$$$plug*.so $(1)/usr/lib/gnunet ; \
 	done )
 
 	( for lex in daemon-topology helper-nat-client \
-	    helper-nat-server service-arm service-ats service-ats-new service-cadet \
+	    helper-nat-server service-arm service-ats service-cadet \
 	    service-core service-dht service-identity service-nat service-nat-auto \
-	    service-nse service-peerinfo service-peerstore service-regex \
+	    service-nse service-peerinfo service-regex \
 	    service-revocation service-scalarproduct-alice \
 	    service-scalarproduct-bob service-scalarproduct-ecc-alice \
-	    service-scalarproduct-ecc-bob service-set service-seti service-setu service-statistics \
+	    service-scalarproduct-ecc-bob service-set service-statistics \
 	    service-transport timeout; do \
 		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnunet/libexec/gnunet-$$$$lex $(1)/usr/lib/gnunet/libexec ; \
 	done )
 
-	( for conf in arm ats cadet communicator-unix core datacache dht identity \
-	    nat nat-auto nse peerinfo peerstore regex revocation \
-	    scalarproduct set seti setu statistics topology transport util; do \
+	( for conf in arm ats cadet core datacache dht identity identity-provider \
+	    nat nat-auto nse peerinfo regex revocation scalarproduct \
+	    set statistics topology transport util; do \
 		$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/gnunet/config.d/$$$$conf.conf $(1)/usr/share/gnunet/config.d ; \
 	done )
 
@@ -190,18 +182,6 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/gnunet/*.h $(1)/usr/include/gnunet
 endef
 
-BIN_abd:=abd
-LIB_abd:=abd
-PLUGIN_abd:=gnsrecord_abd
-LIBEXEC_abd:=service-abd
-CONF_abd:=abd
-DEPENDS_abd:=+gnunet-gns
-
-BIN_auction:=auction-create auction-info auction-join
-LIBEXEC_auction:=service-auction
-CONF_auction:=auction
-DEPENDS_auction:=+gnunet-reclaim +jansson
-
 DEPENDS_conversation:=+gnunet-gns +libgst1app +libgst1audio +libgstreamer1 +glib2 +pulseaudio-daemon +libopus +libogg
 BIN_conversation:=conversation conversation-test
 LIB_conversation:=conversation microphone speaker
@@ -215,19 +195,18 @@ PLUGIN_dht-cli:=block_test
 DEPENDS_curl:=+libgnurl +jansson
 LIB_curl:=curl
 
-DEPENDS_hostlist:=+libmicrohttpd-ssl +gnunet-curl +ca-bundle
+DEPENDS_hostlist:=+libmicrohttpd +gnunet-curl +ca-bundle
 LIBEXEC_hostlist:=daemon-hostlist
 CONF_hostlist:=hostlist
 
 DEPENDS_transport-bluetooth:=+bluez-libs
 PLUGIN_transport-bluetooth:=transport_bluetooth
 LIBEXEC_transport-bluetooth:=helper-transport-bluetooth
-FILE_MODES_transport-bluetooth:=/usr/lib/gnunet/libexec/gnunet-helper-transport-bluetooth:root:gnunet:4750
 
 DEPENDS_transport-http_client:=+gnunet-curl +ca-bundle
 PLUGIN_transport-http_client:=transport_http_client transport_https_client
 
-DEPENDS_transport-http_server:=+libmicrohttpd-ssl
+DEPENDS_transport-http_server:=+libmicrohttpd
 PLUGIN_transport-http_server:=transport_http_server transport_https_server
 
 PLUGIN_transport-tcp:=transport_tcp
@@ -236,7 +215,13 @@ PLUGIN_transport-udp:=transport_udp
 
 PLUGIN_transport-wlan:=transport_wlan
 LIBEXEC_transport-wlan:=helper-transport-wlan
-FILE_MODES_transport-wlan:=/usr/lib/gnunet/libexec/gnunet-helper-transport-wlan:root:gnunet:4750
+
+PLUGIN_transport-xt:=transport_xt
+
+PLUGIN_transport-xu:=transport_xu
+
+DEPENDS_experiments:=+libglpk
+PLUGIN_experiments:=ats_mlp ats_ril
 
 # BIN_dv:=dv
 LIB_dv:=dv
@@ -244,7 +229,7 @@ PLUGIN_dv:=transport_dv
 LIBEXEC_dv:=service-dv
 CONF_dv:=dv
 
-DEPENDS_fs:=+gnunet-datastore +libextractor
+DEPENDS_fs:=+gnunet-datastore +gnunet-peerstore +libextractor
 BIN_fs:=auto-share directory download fs publish unindex search
 LIB_fs:=fs
 PLUGIN_fs:=block_fs
@@ -252,18 +237,17 @@ LIBEXEC_fs:=helper-fs-publish service-fs
 CONF_fs:=fs
 
 DEPENDS_gns:=+gnunet-vpn +iptables-mod-extra
-USERID_gns:=:gnunetdns=452
-BIN_gns:=gns gns-import.sh namecache namestore resolver zoneimport 
+USERID_gns:=gnunet=958:gnunetdns=452
+BIN_gns:=gns gns-import.sh namecache namestore resolver zoneimport
 LIB_gns:=gns gnsrecord namecache namestore
 PLUGIN_gns:=block_dns block_gns gnsrecord_conversation gnsrecord_dns gnsrecord_gns
 LIBEXEC_gns:=dns2gns helper-dns service-dns service-gns service-namecache service-namestore service-resolver service-zonemaster
 CONF_gns:=dns gns namecache namestore resolver zonemaster
-FILE_MODES_gns:=/usr/lib/gnunet/libexec/gnunet-helper-dns:root:gnunetdns:4750 /usr/lib/gnunet/libexec/gnunet-service-dns:gnunet:gnunetdns:2750
 
-DEPENDS_namestore-fcfsd:=+gnunet-gns +libmicrohttpd-ssl
+DEPENDS_namestore-fcfsd:=+gnunet-gns +libmicrohttpd
 LIBEXEC_namestore-fcfsd:=namestore-fcfsd
 
-DEPENDS_gns-proxy:=+gnunet-gns +gnunet-curl +libmicrohttpd-ssl +PACKAGE_libgnutls-dane:libgnutls-dane
+DEPENDS_gns-proxy:=+gnunet-gns +gnunet-curl +libmicrohttpd
 LIBEXEC_gns-proxy:=gns-proxy
 
 DEPENDS_datastore:=+gnunet-gns
@@ -272,17 +256,26 @@ LIB_datastore:=datastore
 LIBEXEC_datastore:=service-datastore
 CONF_datastore:=datastore
 
+BIN_peerstore:=peerstore
+LIB_peerstore:=peerstore
+LIBEXEC_peerstore:=service-peerstore
+CONF_peerstore:=peerstore
 
-DEPENDS_reclaim:=+gnunet-gns +gnunet-sqlite +libpbc +libgabe +jansson
-BIN_reclaim:=reclaim
-LIB_reclaim:=consensus abe reclaim reclaimattribute secretsharing
-LIBEXEC_reclaim:=service-consensus service-reclaim service-secretsharing
+DEPENDS_auction:=+gnunet-reclaim
+BIN_auction:=auction-create auction-info auction-join
+LIBEXEC_auction:=service-auction
+CONF_auction:=auction
+
+DEPENDS_reclaim:=+gnunet-gns +gnunet-sqlite +libpbc +libgabe
+BIN_reclaim:=credential reclaim
+LIB_reclaim:=consensus credential abe reclaim reclaimattribute secretsharing
+LIBEXEC_reclaim:=service-consensus service-credential service-reclaim service-secretsharing
 CONF_reclaim:=consensus reclaim secretsharing
-PLUGIN_reclaim:=block_consensus gnsrecord_reclaim reclaim_credential_jwt reclaim_attribute_basic
+PLUGIN_reclaim:=block_consensus gnsrecord_credential gnsrecord_reclaim reclaim_attribute_gnuid reclaim_sqlite
 
-DEPENDS_rest:=+gnunet-gns +gnunet-reclaim +libmicrohttpd-ssl +jansson
+DEPENDS_rest:=+gnunet-gns +gnunet-reclaim +libmicrohttpd +jansson
 LIB_rest:=rest json
-PLUGIN_rest:=rest_config rest_copying rest_gns rest_identity rest_namestore rest_peerinfo rest_openid_connect rest_reclaim
+PLUGIN_rest:=rest_copying rest_gns rest_identity rest_namestore rest_peerinfo rest_openid_connect rest_reclaim
 LIBEXEC_rest:=rest-server
 CONF_rest:=rest
 
@@ -295,8 +288,9 @@ PLUGIN_dhtcache-heap:=datacache_heap
 CONFLICTS_dhtcache-heap:=gnunet-dhtcache-pgsql gnunet-dhtcache-sqlite
 
 DEPENDS_gns-flat:=+gnunet-gns
-PLUGIN_gns-flat:=namecache_flat namestore_flat
+PLUGIN_gns-flat:=namecache_flat namestore_heap
 
+DEPENDS_peerstore-flat:=+gnunet-peerstore
 PLUGIN_peerstore-flat:=peerstore_flat
 
 DEPENDS_fs-heap:=+gnunet-datastore
@@ -334,7 +328,7 @@ DEPENDS_gns-sqlite:=+gnunet-gns +gnunet-sqlite
 PLUGIN_gns-sqlite:=namecache_sqlite namestore_sqlite
 CONFLICTS_gns-sqlite:=gnunet-gns-flat
 
-DEPENDS_peerstore-sqlite:=+gnunet-sqlite
+DEPENDS_peerstore-sqlite:=+gnunet-peerstore +gnunet-sqlite
 PLUGIN_peerstore-sqlite:=peerstore_sqlite
 CONFLICTS_peerstore-sqlite:=gnunet-peerstore-flat
 
@@ -344,15 +338,17 @@ PLUGIN_dhtcache-sqlite:=datacache_sqlite
 DEPENDS_fs-sqlite:=+gnunet-datastore +gnunet-sqlite
 PLUGIN_fs-sqlite:=datastore_sqlite
 
+
+
 DEPENDS_utils:=+certtool +openssl-util
 BIN_utils:=gns-proxy-setup-ca transport-certificate-creation
 
 DEPENDS_vpn:=+kmod-tun +iptables +firewall
 BIN_vpn:=vpn
-FILE_MODES_vpn:=/usr/lib/gnunet/libexec/gnunet-helper-exit:root:gnunet:4750 /usr/lib/gnunet/libexec/gnunet-helper-vpn:root:gnunet:4750
 LIB_vpn:=dnsstub tun vpn
 LIBEXEC_vpn:=daemon-exit daemon-pt helper-exit helper-vpn service-vpn
 CONF_vpn:=exit pt vpn
+
 
 define Package/gnunet-gns/prerm
 #!/bin/sh
@@ -399,17 +395,17 @@ $(eval $(call PostInstFixSUIDPerms,gnunet-transport-wlan))
 $(eval $(call PostInstFixSUIDPerms,gnunet-vpn))
 
 $(eval $(call BuildPackage,gnunet))
-$(eval $(call BuildComponent,abd,credential service components,))
-$(eval $(call BuildComponent,auction,auction components,))
 $(eval $(call BuildComponent,conversation,conversation component,))
 $(eval $(call BuildComponent,curl,cURL wrapper component,))
 $(eval $(call BuildComponent,datastore,data storage components,))
 $(eval $(call BuildComponent,dht-cli,DHT command line clients,))
 # $(eval $(call BuildComponent,dv,distance-vector routing component,y))
+$(eval $(call BuildComponent,experiments,experimental components,))
 $(eval $(call BuildComponent,fs,file-sharing components,))
 $(eval $(call BuildComponent,gns,name resolution components,y))
 $(eval $(call BuildComponent,gns-proxy,gns-proxy component,))
 $(eval $(call BuildComponent,hostlist,HTTP bootstrap hostlist client and server,y))
+$(eval $(call BuildComponent,peerstore,peerstore local persistency component,))
 $(eval $(call BuildComponent,reclaim,reclaim identity-provider subsystem,))
 $(eval $(call BuildComponent,rest,REST interface,))
 $(eval $(call BuildComponent,rps,RPS routing component,y))
@@ -435,5 +431,7 @@ $(eval $(call BuildComponent,transport-http_server,HTTP/HTTPS server transport,)
 $(eval $(call BuildComponent,transport-tcp,TCP transport,y))
 $(eval $(call BuildComponent,transport-udp,UDP transport,y))
 $(eval $(call BuildComponent,transport-wlan,WLAN transport,y))
+$(eval $(call BuildComponent,transport-xt,xt transport,))
+$(eval $(call BuildComponent,transport-xu,xu transport,))
 $(eval $(call BuildComponent,utils,administration utililties,))
 $(eval $(call BuildComponent,vpn,vpn components,y))

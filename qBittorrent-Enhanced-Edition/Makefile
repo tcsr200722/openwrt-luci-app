@@ -42,7 +42,7 @@ CONFIGURE_VARS += \
 CONFIGURE_ARGS += \
 	--disable-gui \
 	--enable-stacktrace=no \
-	--with-boost=$(STAGING_DIR)/usr
+	--with-boost="$(STAGING_DIR)/usr"
 
 MAKE_VARS += \
 	INSTALL_ROOT="$(PKG_INSTALL_DIR)"

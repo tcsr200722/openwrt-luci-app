@@ -8,30 +8,24 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=alsa-utils
-PKG_VERSION:=1.2.4
-PKG_RELEASE:=1
+PKG_VERSION:=1.1.6
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=ftp://ftp.alsa-project.org/pub/utils/ \
 		http://distfiles.gentoo.org/distfiles/
 PKG_HASH:=skip
-
-PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
-PKG_LICENSE:=GPL-2.0-or-later
-PKG_LICENSE_FILES:=COPYING
-
-PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
+PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/alsa-utils
   SECTION:=sound
   CATEGORY:=Sound
-  DEPENDS:=+alsa-lib +alsa-ucm-conf +libncursesw +libpthread
+  DEPENDS:=+alsa-lib +libncursesw +libpthread
   TITLE:=ALSA (Advanced Linux Sound Architecture) utilities
-  URL:=https://www.alsa-project.org/
+  URL:=http://www.alsa-project.org/
 endef
 
 define Package/alsa-utils-seq
@@ -39,7 +33,7 @@ define Package/alsa-utils-seq
   CATEGORY:=Sound
   DEPENDS:=+alsa-lib +libpthread
   TITLE:=ALSA sequencer utilities
-  URL:=https://www.alsa-project.org/
+  URL:=http://www.alsa-project.org/
 endef
 
 define Package/alsa-utils-tests
@@ -47,21 +41,16 @@ define Package/alsa-utils-tests
   CATEGORY:=Sound
   TITLE:=ALSA utilities test data (adds ~1.3M to image)
   DEPENDS:=+alsa-lib +libpthread
-  URL:=https://www.alsa-project.org/
+  URL:=http://www.alsa-project.org/
 endef
 
-CONFIGURE_ARGS += \
-	--disable-rpath \
-	--disable-alsatest \
-	--disable-bat \
-	--disable-xmlto \
-	--disable-rst2man \
-	--with-curses=ncursesw
-
-CONFIGURE_VARS += \
-	ac_cv_header_samplerate_h=no
-
-TARGET_LDFLAGS += -latopology
+CONFIGURE_ARGS+= \
+		--disable-rpath \
+		--disable-alsatest \
+		--disable-bat \
+		--disable-xmlto \
+		--disable-rst2man \
+		--with-curses=ncursesw
 
 define Package/alsa-utils/install
 	$(INSTALL_DIR) $(1)/usr/{s,}bin

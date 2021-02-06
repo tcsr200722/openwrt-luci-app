@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 OpenWrt.org
 
-preinit_btrfs_scan() {
-	if grep -q btrfs /proc/filesystems; then
-		 btrfs device scan
-	fi
+START=19
+
+start() {
+	grep -q btrfs /proc/filesystems && /usr/bin/btrfs device scan
 }
 
-boot_hook_add preinit_main preinit_btrfs_scan

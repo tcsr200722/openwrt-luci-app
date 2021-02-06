@@ -4,7 +4,7 @@
 #
 
 define Package/php7-pecl/Default
-  SUBMENU:=PHP7
+  SUBMENU:=PHP
   SECTION:=lang
   CATEGORY:=Languages
   URL:=http://pecl.php.net/
@@ -17,12 +17,12 @@ define Build/Prepare
 endef
 
 CONFIGURE_VARS+= \
-	ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no)
+        ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no)
 
 CONFIGURE_ARGS+= \
 	--with-php-config=$(STAGING_DIR)/usr/bin/php7-config
 
-define PHP7PECLPackage
+define PECLPackage
 
   define Package/php7-pecl-$(1)
     $(call Package/php7-pecl/Default)

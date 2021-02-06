@@ -19,7 +19,6 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Network
 	TITLE:=BaiduPCS-Web is a web controller for BaiduPCS-Go
 	URL:=https://github.com/Erope/baidupcs-web
-	DEPENDS:=@(aarch64||arm||i386||mips||mipsel||x86_64)
 endef
 
 
@@ -60,9 +59,13 @@ ifeq ($(ARCH),aarch64)
 	PKG_ARCH_BAIDUPCS-WEB:=arm64
 endif
 
+
 PKG_SOURCE:=BaiduPCS-Go-v$(PKG_VERSION)-linux-$(PKG_ARCH_BAIDUPCS-WEB).zip
+
 PKG_SOURCE_URL:=https://github.com/coolsnowwolf/baidupcs-web/raw/master/
+
 UNZIP_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)/$(PKG_NAME)-unzip
+
 PKG_HASH:=skip
 
 define Build/Prepare

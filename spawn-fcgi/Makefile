@@ -9,20 +9,18 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=spawn-fcgi
 PKG_VERSION:=1.6.4
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://download.lighttpd.net/spawn-fcgi/releases-1.6.x/
 PKG_HASH:=skip
 
-PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
-PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE:=BSD-3c
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_PARALLEL:=1
+PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/cmake.mk
 
 define Package/spawn-fcgi
   SUBMENU:=Web Servers/Proxies
@@ -38,7 +36,7 @@ endef
 
 define Package/spawn-fcgi/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/spawn-fcgi $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/spawn-fcgi $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,spawn-fcgi))

@@ -11,7 +11,6 @@ uci -q batch <<-EOF >/dev/null
 	set firewall.bypass.reload=1
 	commit firewall
 EOF
-chmod 755 /etc/init.d/bypass /usr/share/bypass/* >/dev/null 2>&1
-/etc/init.d/bypass enable >/dev/null 2>&1
-rm -rf /tmp/luci-modulecache /tmp/luci-indexcache*
+
+rm -f /tmp/luci-*
 exit 0

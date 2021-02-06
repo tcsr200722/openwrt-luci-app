@@ -906,7 +906,6 @@ input[type=file] {
 
 /* Button */
 
-.btn,
 .cbi-button,
 button {
     border-radius: 6px !important;
@@ -922,16 +921,12 @@ button {
     margin-left: 0.2em;
 }
 
-.btn:active,
-.btn:focus,
 .cbi-button:active,
-.cbi-button:focus,
-button:active,
+.cbi-button:focus button:active,
 button:focus {
     border-color: #bbb;
 }
 
-/*
 .cbi-button-up,
 .cbi-input-up {
     background-position: center;
@@ -949,7 +944,6 @@ button:focus {
     padding-left: 15px;
     padding-right: 15px;
 }
-*/
 
 .cbi-button-add,
 .cbi-input-add {
@@ -1386,7 +1380,7 @@ body.modal-overlay-active #modal_overlay>.modal {
     max-width: unset;
     min-height: 32px;
     min-width: 270px;
-    /* background: linear-gradient(to bottom, #fceec1, #eedc94) repeat-x !important; */
+    background: linear-gradient(to bottom, #fceec1, #eedc94) repeat-x !important;
     border-radius: 3px;
     padding: 1em;
     margin: 0;
@@ -1427,14 +1421,14 @@ body.modal-overlay-active #modal_overlay>.modal {
 
 .modal>* {
     flex-basis: 100%;
-    /* line-height: normal; */
+    line-height: normal;
     margin-bottom: .5em;
     max-width: 100%;
 }
 
 #modal_overlay .modal>* {
     flex-basis: 100%;
-    /* line-height: normal; */
+    line-height: normal;
     margin-bottom: .5em;
 }
 
@@ -1470,10 +1464,10 @@ body.modal-overlay-active #modal_overlay>.modal {
     max-width: 400px;
     width: auto;
     background: white;
-    /* border: 1px solid #ccc; */
+    border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    /* padding: 0 0.4em !important; */
+    padding: 0 0.4em !important;
 }
 
 .cbi-dynlist>.item {
@@ -1484,7 +1478,7 @@ body.modal-overlay-active #modal_overlay>.modal {
     border-radius: 3px;
     position: relative;
     pointer-events: none;
-    padding: 2px 2em 2px 10px;
+    padding: 2px 2em 2px 4px;
 }
 
 .cbi-dynlist>.item::after {
@@ -1572,21 +1566,4 @@ body.modal-overlay-active #modal_overlay>.modal {
     white-space: pre;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-header [data-indicator] {
-	padding: 1px 3px 2px;
-	font-size: 9.75px;
-	font-weight: bold;
-	color: #fff !important;
-	text-transform: uppercase;
-	white-space: nowrap;
-	background-color: #bfbfbf;
-	border-radius: 3px;
-	text-shadow: none;
-	margin-left: .4em;
-}
-
-header [data-indicator][data-style="active"] {
-	background-color: #62cffc;
 }
