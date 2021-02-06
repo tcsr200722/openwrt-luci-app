@@ -21,6 +21,8 @@
 3、克隆package里的单个文件(建议此法)
 ```bash
 svn export --force https://github.com/project-lede/openwrt-app/branches/luci18/luci-app-godproxy package/diy/luci-app-godproxy
+或者
+svn export --force https://github.com/project-lede/openwrt-app/trunk/luci-app-godproxy package/diy/luci-app-godproxy
 ```
 ## 感谢诸位大神的开源和贡献。
 ```bash
