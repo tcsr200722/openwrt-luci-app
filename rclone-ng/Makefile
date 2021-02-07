@@ -11,37 +11,48 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rclone-ng
 PKG_VERSION:=0.5.0
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
-PKG_SOURCE:=RcloneNg-v$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://github.com/ElonH/RcloneNg/releases/download/v$(PKG_VERSION)/
-PKG_HASH:=skip
 
-PKG_LICENSE:=MIT
-PKG_LICENSE_FILE:=LICENSE
+PKG_LICENSE:=GPLv3
 PKG_MAINTAINER:=ElonH <elonhhuang@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
 
-TAR_CMD:=$(HOST_TAR) -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
+PKG_SOURCE:=RcloneNg-v$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/ElonH/RcloneNg/releases/download/v$(PKG_VERSION)/
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+PKG_HASH:=skip
 
-define Package/rclone-ng
+define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
+	SUBMENU:=File Transfer
 	SUBMENU:=Cloud Manager
 	TITLE:=An angular web application for rclone
 	URL:=https://github.com/ElonH/RcloneNg
-	DEPENDS:=+rclone
 	PKGARCH:=all
 endef
 
-define Build/Compile
-	true
+define Package/$(PKG_NAME)/description
+	An angular web application for rclone
 endef
 
-define Package/rclone-ng/install
+define Build/Prepare
+	mkdir -vp $(PKG_BUILD_DIR)
+	tar -xzf $(DL_DIR)/$(PKG_SOURCE) -C $(PKG_BUILD_DIR)
+endef
+
+define Build/Configure
+endef
+
+define Build/Compile
+	echo "$(PKG_NAME) Compile Skiped!"
+endef
+
+define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/www
 	$(CP) $(PKG_BUILD_DIR)/RcloneNg $(1)/www
 endef
 
-$(eval $(call BuildPackage,rclone-ng))
+$(eval $(call BuildPackage,$(PKG_NAME)))

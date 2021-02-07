@@ -10,43 +10,49 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rclone-webui-react
-PKG_VERSION:=2.0.3
+PKG_VERSION:=0.1.0
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).zip
-PKG_SOURCE_URL:=https://github.com/rclone/rclone-webui-react/releases/download/v$(PKG_VERSION)/currentbuild.zip?
-PKG_HASH:=skip
 
-PKG_LICENSE:=MIT
-PKG_LICENSE_FILE:=LICENSE
+PKG_LICENSE:=GPLv3
 PKG_MAINTAINER:=ElonH <elonhhuang@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
 
-UNZIP_CMD:=unzip -q -d $(PKG_BUILD_DIR) $(DL_DIR)/$(PKG_SOURCE)
+PKG_SOURCE:=currentbuild.zip
+PKG_SOURCE_URL:=https://github.com/rclone/rclone-webui-react/releases/download/v$(PKG_VERSION)/
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+PKG_HASH:=skip
 
-define Package/rclone-webui-react
+define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
+	SUBMENU:=File Transfer
 	SUBMENU:=Cloud Manager
 	TITLE:=A reactjs based web UI for rclone
 	URL:=https://github.com/rclone/rclone-webui-react
-	DEPENDS:=+rclone
 	PKGARCH:=all
 endef
 
-define Package/rclone-webui-react/description
+define Package/$(PKG_NAME)/description
 	A full fledged UI for the rclone cloud sync tool.
 endef
 
-
-define Build/Compile
-	true
+define Build/Prepare
+	mkdir -vp $(PKG_BUILD_DIR)
+	unzip -od $(PKG_BUILD_DIR) $(DL_DIR)/$(PKG_SOURCE)
 endef
 
-define Package/rclone-webui-react/install
+define Build/Configure
+endef
+
+define Build/Compile
+	echo "$(PKG_NAME) Compile Skiped!"
+endef
+
+define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/www/rclone-webui-react
 	$(CP) $(PKG_BUILD_DIR)/build/* $(1)/www/rclone-webui-react
 endef
 
-$(eval $(call BuildPackage,rclone-webui-react))
+$(eval $(call BuildPackage,$(PKG_NAME)))

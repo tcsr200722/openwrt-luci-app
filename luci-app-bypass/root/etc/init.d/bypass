@@ -946,6 +946,11 @@ start() {
 		GLOBAL_SERVER=$switch_server
 		switch_enable=1
 	fi
+	if [ -f "/etc/init.d/smartdns" ]; then
+		uci del smartdns.@smartdns[0].enabled 2>/dev/null
+		uci commit smartdns
+		/etc/init.d/smartdns stop 2>/dev/null
+	fi
 	if rules; then
 		if start_retcp; then
 			[ -n "$UDP_RELAY_SERVER" ] && start_reudp
@@ -1032,7 +1037,7 @@ restart() {
 			sleep 1
 		done
 		start
-		killall -q -9 smartdns
+		kill -9 $(ps -w | grep smartdns | grep -v grep | awk '{print$1}') 2>/dev/null
 		start_dns
 		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 		preload

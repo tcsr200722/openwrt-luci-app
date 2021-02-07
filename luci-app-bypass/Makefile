@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
 PKG_VERSION:=1.2
-PKG_RELEASE:=49
+PKG_RELEASE:=48
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -135,15 +135,6 @@ define Package/$(PKG_NAME)/install
 	cp -pR ./root/* $(1)/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/bypass.*.lmo $(1)/usr/lib/lua/luci/i18n/
-endef
-
-define Package/$(PKG_NAME)/postinst
-	#!/bin/sh
-	if [ -z "$${IPKG_INSTROOT}" ]; then
-		chmod 755 /etc/init.d/bypass /usr/share/bypass/* >/dev/null 2>&1
-		/etc/init.d/bypass enable
-	fi
-	exit 0
 endef
 
 define Package/$(PKG_NAME)/prerm
