@@ -8,17 +8,19 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=trojan
 PKG_VERSION:=1.16.0
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/trojan-gfw/trojan/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/trojan-gfw/trojan.git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=8606b7110fe79f8ab02d60c897f87ffb0a9b23f0
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
 
-PKG_BUILD_PARALLEL:=1
+CMAKE_INSTALL:=1
+PKG_BUILD_PARALLEL:=0
 PKG_BUILD_DEPENDS:=openssl
 
 PKG_LICENSE:=GPL-3.0
-PKG_LICENSE_FILE:=LICENSE
 PKG_MAINTAINER:=GreaterFire
 
 include $(INCLUDE_DIR)/package.mk
@@ -52,10 +54,10 @@ CMAKE_OPTIONS += \
 define Package/trojan
 	SECTION:=net
 	CATEGORY:=Network
+	SUBMENU:=Web Servers/Proxies
 	TITLE:=An unidentifiable mechanism that helps you bypass GFW
 	URL:=https://github.com/trojan-gfw/trojan
-	DEPENDS:= \
-		+libpthread +libstdcpp +libopenssl \
+	DEPENDS:=+libpthread +libstdcpp +libopenssl \
 		+boost +boost-system +boost-program_options +boost-date_time
 endef
 
@@ -65,3 +67,4 @@ define Package/trojan/install
 endef
 
 $(eval $(call BuildPackage,trojan))
+

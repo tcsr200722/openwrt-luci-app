@@ -7,13 +7,40 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-argon-config
-PKG_VERSION:=0.7
+LUCI_PKGARCH:=all
+PKG_VERSION:=0.8
 PKG_RELEASE:=beta
 
-LUCI_TITLE:=LuCI page for Argon Config
-LUCI_DEPENDS:=+luci-theme-argonv3
-LUCI_PKGARCH:=all
+include $(INCLUDE_DIR)/package.mk
 
-include $(TOPDIR)/feeds/luci/luci.mk
+define Package/luci-app-argon-config
+ 	SECTION:=luci
+	CATEGORY:=LuCI
+	SUBMENU:=3. Applications
+	TITLE:=LuCI page for Argon Config
+	PKGARCH:=all
+	DEPENDS:=+luci-compat
+endef
+
+define Build/Prepare
+endef
+
+define Build/Compile
+endef
+
+
+define Package/luci-app-argon-config/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
+	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
+	$(INSTALL_DIR) $(1)/
+	cp -pR ./root/* $(1)/
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
+	po2lmo ./po/zh-cn/argon-config.po $(1)/usr/lib/lua/luci/i18n/argon-config.zh-cn.lmo
+endef
+
+
+$(eval $(call BuildPackage,luci-app-argon-config))
 
 # call BuildPackage - OpenWrt buildroot signature
+
+

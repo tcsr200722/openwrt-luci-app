@@ -19,7 +19,7 @@ del_cron() {
 }
 
 start_service(){
-	sh /usr/share/jd-dailybonus/newapp.sh -s
+	/usr/share/jd-dailybonus/newapp.sh -s
 }
 
 stop_service() {
