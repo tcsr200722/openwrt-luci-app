@@ -699,6 +699,7 @@ gen_dns() {
 		force-AAAA-SOA yes
 		speed-check-mode none
 		cache-size 0
+		dualstack-ip-selection yes
 		log-level fatal
 		log-file $LOG
 	EOF
@@ -946,11 +947,7 @@ start() {
 		GLOBAL_SERVER=$switch_server
 		switch_enable=1
 	fi
-	if [ -f "/etc/init.d/smartdns" ]; then
-		uci del smartdns.@smartdns[0].enabled 2>/dev/null
-		uci commit smartdns
-		/etc/init.d/smartdns stop 2>/dev/null
-	fi
+
 	if rules; then
 		if start_retcp; then
 			[ -n "$UDP_RELAY_SERVER" ] && start_reudp
@@ -1001,7 +998,13 @@ stop() {
 restart() {
 	STATUS=N
 	stop
+	[ "$(uci_get_by_type global global_server)" ] || exit 0
 	if [ -s $DNS_T ]; then
+		if [[ "$(uci get smartdns.@smartdns[0].enabled 2>/dev/null)" == "1" ]]; then
+			uci del smartdns.@smartdns[0].enabled 2>/dev/null
+			uci commit smartdns
+			/etc/init.d/smartdns stop 2>/dev/null
+		fi
 		cat >$DNS_T <<-EOF
 			speed-check-mode none
 			cache-persist no
