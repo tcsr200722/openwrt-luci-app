@@ -5,7 +5,6 @@ LUCI_DEPENDS:=@(aarch64||arm||x86_64) \
 	+luci-compat \
 	+luci-lib-docker \
 	+docker \
-	+dockerd \
 	+ttyd
 LUCI_PKGARCH:=all
 
