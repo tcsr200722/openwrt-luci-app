@@ -1,24 +1,29 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xray-core
-PKG_VERSION:=1.3.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.3.1
+PKG_RELEASE:=1
 
-#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-#PKG_SOURCE_URL:=https://codeload.github.com/XTLS/Xray-core/tar.gz/v$(PKG_VERSION)?
-#PKG_HASH:=skip
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/XTLS/Xray-core/tar.gz/v$(PKG_VERSION)?
+PKG_HASH:=skip
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/XTLS/xray-core.git
-PKG_MIRROR_HASH:=skip
-PKG_SOURCE_VERSION:=48fab4d3983b9661dc2b48e545fadf86a25b05bd
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
+#PKG_SOURCE_PROTO:=git
+#PKG_SOURCE_URL:=https://github.com/XTLS/xray-core.git
+#PKG_MIRROR_HASH:=19f3017d8279acc28d242d18689b95a39ca00a286e72329552d114f04a861ecb
+#PKG_SOURCE_VERSION:=c345d4818efa763b07961d6c132afe1cf91845de
+#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=MPL-2.0
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/xray-core-$(PKG_VERSION)
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_XRAY_CORE_PROVIDE_V2RAY_CORE \
+	CONFIG_XRAY_CORE_COMPRESS_GOPROXY \
+	CONFIG_XRAY_CORE_COMPRESS_UPX \
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/Xray-core-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -37,7 +42,7 @@ define Package/xray/template
   TITLE:=A platform for building proxies to bypass network restrictions
   SECTION:=net
   CATEGORY:=Network
-  URL:=https://xray.sh
+  URL:=https://xtls.github.io
 endef
 
 define Package/xray-core
@@ -81,30 +86,53 @@ define Package/xray-geodata/description
   This includes GEO datas used for xray-core.
 endef
 
+define Package/xray-core/config
+menu "Xray-core Configuration"
+	depends on PACKAGE_xray-core
+
+config XRAY_CORE_PROVIDE_V2RAY_CORE
+	bool "Provide V2Ray binary using XRay"
+	default y
+
+config XRAY_CORE_COMPRESS_GOPROXY
+	bool "Compiling with GOPROXY proxy"
+	default n
+
+config XRAY_CORE_COMPRESS_UPX
+	bool "Compress executable files with UPX"
+	default y
+endmenu
+endef
+
 define Package/xray-core/conffiles
 /etc/xray/
 /etc/config/xray
 endef
 
-GEOIP_VER:=202102232209
+GEOIP_VER:=202103012212
 GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
 
 define Download/geoip
   URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOIP_VER)/
   URL_FILE:=geoip.dat
   FILE:=$(GEOIP_FILE)
-  HASH:=1a57d6f55dd57ad0b7e4da77b59fffdd5bef1e63864069c7f846847f59e6cdb1
+  HASH:=55921367a26422a9acd96c3aa8a3395363f1f92fec5230f46b49406d999f88f6
 endef
 
-GEOSITE_VER:=202102232209
+GEOSITE_VER:=202103012212
 GEOSITE_FILE:=geosite.dat.$(GEOSITE_VER)
 
 define Download/geosite
   URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOSITE_VER)/
   URL_FILE:=geosite.dat
   FILE:=$(GEOSITE_FILE)
-  HASH:=14d1d5c7e8595cf22ed6223418551def8f91fc48d52aef937be53c873a42e38c
+  HASH:=848c2455275452c32b341430a1185dcabfe7af3ff44f2226b22e3c50f034657b
 endef
+
+ifneq ($(CONFIG_XRAY_CORE_COMPRESS_GOPROXY),)
+	export GO111MODULE=on
+	export GOPROXY=https://goproxy.io
+endif
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -114,11 +142,20 @@ ifneq ($(CONFIG_PACKAGE_xray-geodata),)
 endif
 endef
 
+define Build/Compile
+	$(call GoPackage/Build/Compile)
+ifneq ($(CONFIG_XRAY_CORE_COMPRESS_UPX),)
+	$(STAGING_DIR_HOST)/bin/upx --lzma --best $(GO_PKG_BUILD_BIN_DIR)/main
+endif
+endef
+
 define Package/xray-core/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/main $(1)/usr/bin/xray
+ifneq ($(CONFIG_XRAY_CORE_PROVIDE_V2RAY_CORE),)
 	$(LN) xray $(1)/usr/bin/v2ray
+endif
 
 	$(INSTALL_DIR) $(1)/etc/xray/
 	$(INSTALL_CONF) $(CURDIR)/files/config.json.example $(1)/etc/xray/
