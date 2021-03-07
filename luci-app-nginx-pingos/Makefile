@@ -3,8 +3,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-nginx-pingos
-PKG_VERSION:=1.19.2
-PKG_RELEASE:=2
+PKG_VERSION:=1.19.6
+PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
