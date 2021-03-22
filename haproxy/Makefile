@@ -10,7 +10,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=haproxy
-PKG_VERSION:=1.8.27
+PKG_VERSION:=1.8.29
 PKG_RELEASE:=1
 
 PKG_SOURCE:=haproxy-$(PKG_VERSION).tar.gz

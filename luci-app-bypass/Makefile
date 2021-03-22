@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
 PKG_VERSION:=1.2
-PKG_RELEASE:=61
+PKG_RELEASE:=62
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -96,6 +96,7 @@ endef
 define Build/Prepare
 	$(foreach po,$(wildcard ${CURDIR}/po/zh-cn/*.po), \
 		po2lmo $(po) $(PKG_BUILD_DIR)/$(patsubst %.po,%.lmo,$(notdir $(po)));)
+	chmod +x root/etc/init.d/bypass root/usr/share/bypass/* >/dev/null 2>&1
 endef
 
 define Package/$(PKG_NAME)/postinst
@@ -111,33 +112,12 @@ define Package/$(PKG_NAME)/conffiles
 endef
 
 define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/controller
-	$(INSTALL_DATA) ./luasrc/controller/* $(1)/usr/lib/lua/luci/controller/
-	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/model/cbi/bypass
-	$(INSTALL_DATA) ./luasrc/model/cbi/bypass/* $(1)/usr/lib/lua/luci/model/cbi/bypass/
-	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/bypass
-	$(INSTALL_DATA) ./luasrc/view/bypass/* $(1)/usr/lib/lua/luci/view/bypass/
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci
+	cp -pR ./luasrc/* $(1)/usr/lib/lua/luci
+	$(INSTALL_DIR) $(1)/
+	cp -pR ./root/* $(1)/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/bypass.*.lmo $(1)/usr/lib/lua/luci/i18n/
-	$(INSTALL_DIR) $(1)/etc/bypass
-	$(INSTALL_DATA) ./root/etc/bypass/* $(1)/etc/bypass/
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./root/etc/config/* $(1)/etc/config/
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-	$(INSTALL_BIN) ./root/etc/hotplug.d/iface/* $(1)/etc/hotplug.d/iface/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./root/etc/init.d/* $(1)/etc/init.d/
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./root/etc/uci-defaults/* $(1)/etc/uci-defaults/
-	$(INSTALL_DIR) $(1)/usr/share/bypass
-	$(INSTALL_BIN) ./root/usr/share/bypass/* $(1)/usr/share/bypass/
-	$(INSTALL_DATA) ./root/GeoLite2-Country.mmdb $(1)/usr/share/bypass/
-	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
-	$(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/* $(1)/usr/share/rpcd/acl.d/
-	$(INSTALL_DIR) $(1)/www/luci-static/bypass/flags
-	$(INSTALL_DATA) ./root/www/luci-static/bypass/flags/* $(1)/www/luci-static/bypass/flags/
-	$(INSTALL_DIR) $(1)/www/luci-static/bypass/img
-	$(INSTALL_DATA) ./root/www/luci-static/bypass/img/* $(1)/www/luci-static/bypass/img/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))

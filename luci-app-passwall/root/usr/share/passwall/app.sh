@@ -801,7 +801,8 @@ start_dns() {
 	nonuse)
 		echolog "  - 不过滤DNS..."
 		TUN_DNS=""
-		return
+		use_chinadns_ng=$(config_t_get global always_use_chinadns_ng 0)
+		[ "$use_chinadns_ng" == "0" ] && return
 	;;
 	dns2socks)
 		local dns2socks_socks_server=$(echo $(config_t_get global socks_server 127.0.0.1:9050) | sed "s/#/:/g")
@@ -1113,7 +1114,8 @@ gen_pdnsd_config() {
 				purge_cache = off;
 				proxy_only = on;
 				caching = $_cache;
-				reject=::/0;
+				reject = ::/0;
+				reject_policy = negate;
 			}
 		EOF
 		echolog "  | - [$?]上游DNS：${2}:${3}"
