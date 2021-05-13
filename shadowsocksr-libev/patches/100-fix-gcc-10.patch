@@ -1,5 +1,3 @@
-diff --git a/src/http.h b/src/http.h
-index 914815a..e312dd3 100644
 --- a/src/http.h
 +++ b/src/http.h
 @@ -29,6 +29,6 @@
@@ -10,8 +8,6 @@ index 914815a..e312dd3 100644
 +extern const protocol_t *const http_protocol;
  
  #endif
-diff --git a/src/tls.h b/src/tls.h
-index 3998913..ddbee11 100644
 --- a/src/tls.h
 +++ b/src/tls.h
 @@ -28,6 +28,6 @@
