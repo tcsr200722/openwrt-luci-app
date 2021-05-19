@@ -1,0 +1,191 @@
+#=================================================
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+# Author: P3TERX
+# Blog: https://p3terx.com
+#=================================================
+
+name: Packages-AutoBuild
+
+on: 
+  repository_dispatch:
+  # push: 
+  #   branches:
+  #     - master
+  # schedule:
+  #   - cron: 0 1 */1 * *
+
+env:
+  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    if: github.event.repository.owner.id == github.event.sender.id
+    runs-on: ubuntu-latest
+    
+    name: Build ${{matrix.target}}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["${{ github.event.client_payload.target }}"]
+        
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Trigger Packages Update
+      run: |
+        gitdate=$(curl -H "Authorization: token ${{ secrets.REPO_TOKEN }}" -s "https://api.github.com/repos/garypang13/openwrt-packages/actions/runs" | jq -r '.workflow_runs[0].created_at')
+        gitdate=$(date -d "$gitdate" +%s)
+        now=$(date -d "$(date '+%Y-%m-%d %H:%M:%S')" +%s)
+        if [[ $(expr $gitdate + 60) < $now ]]; then
+        curl -X POST https://api.github.com/repos/garypang13/openwrt-packages/dispatches \
+        -H "Accept: application/vnd.github.everest-preview+json" \
+        -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+        --data '{"event_type": "update"}'
+        fi
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        ( sudo -E apt-get -qq purge azure-cli ghc* zulu* hhvm llvm* firefox powershell openjdk* dotnet* google* mysql* php* android*
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler ccache xsltproc rename antlr3 gperf wget curl swig rsync upx-ucl
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean ) &
+        sudo timedatectl set-timezone "$TZ"
+        if [ ${{matrix.target}} == "redmi-ac2100" ]; then
+            echo "MTARGET=mipsel_24kc" >> $GITHUB_ENV
+        elif [ ${{matrix.target}} == "x86_64" ]; then
+            echo "MTARGET=x86_64" >> $GITHUB_ENV
+        else
+            echo "MTARGET=aarch64_generic" >> $GITHUB_ENV
+        fi
+
+    - name: Get current date
+      id: date
+      run: |
+        echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
+        echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
+        echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
+
+    - name: Clone source code
+      run: |
+        if [ ${{matrix.target}} == "redmi-ac2100" ]; then
+            wget -cO sdk.tar.xz https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/ramips/mt7621/openwrt-sdk-21.02-SNAPSHOT-ramips-mt7621_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+        elif [ ${{matrix.target}} == "x86_64" ]; then
+            wget -cO sdk.tar.xz https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/64/openwrt-sdk-21.02-SNAPSHOT-x86-64_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+        else
+            wget -cO sdk.tar.xz https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/rockchip/armv8/openwrt-sdk-21.02-SNAPSHOT-rockchip-armv8_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+        fi
+        mkdir openwrt
+        svn co https://github.com/garypang13/packages-compile/trunk/devices openwrt/devices
+
+    - name: Load && Update feeds
+      run: |
+        
+        tar -xJf sdk.tar.xz -C openwrt
+        rm -Rf sdk.tar.xz
+        cd openwrt
+        cp -rf ./openwrt-sdk*/. ./ || true
+        sed -i '/\(tools\|toolchain\)\/Makefile/d' Makefile
+        if [ -f /usr/bin/python ]; then
+          ln -sf /usr/bin/python staging_dir/host/bin/python
+        else
+          ln -sf /usr/bin/python3 staging_dir/host/bin/python
+        fi
+        ln -sf /usr/bin/python3 staging_dir/host/bin/python3
+        cp -rf devices/common/. ./
+        cp -rf devices/${{matrix.target}}/. ./
+        ./scripts/feeds update -a
+
+    - name: Load custom configuration
+      run: |
+        cd openwrt
+        chmod +x devices/common/* || true
+        chmod +x devices/${{matrix.target}}/* || true
+        cp -f devices/common/.config .config
+        /bin/bash "devices/common/custom.sh"
+        if [ -f "devices/${{matrix.target}}/custom.sh" ]; then
+          /bin/bash "devices/${{matrix.target}}/custom.sh"
+        fi
+        if [ -f "devices/${{matrix.target}}/.config" ]; then
+          echo >> .config
+          cat devices/${{matrix.target}}/.config >> .config
+        fi
+        cp -Rf ./diy/* ./ || true
+
+    - name: Apply patches
+      run: |
+        cd openwrt
+        find "devices/common/patches" -type f ! -path 'devices/common/patches/china_mirrors.patch' -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 -E --forward --no-backup-if-mismatch" || true
+        if [ -n "$(ls -A "devices/${{matrix.target}}/patches" 2>/dev/null)" ]; then
+          find "devices/${{matrix.target}}/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 -E --forward --no-backup-if-mismatch" || true
+        fi
+
+    - name: SSH connection to Actions
+      uses: garypang13/debugger-action@master
+      if: contains(github.event.action, 'ssh')
+
+    - name: Compile single package
+      run: |
+        cd openwrt
+        make defconfig
+        echo -e "$(($(nproc)+1)) thread compile"
+        make package/luci-app-bypass/compile -j$(($(nproc)+1)) || make package/luci-app-bypass/compile -j1 V=s
+
+    - name: Check space usage
+      run: df -hT
+
+    - name: Organize files
+      id: organize
+      run: |
+        mkdir packages
+        cp -Rf openwrt/bin/packages/*/custom/* packages/ || true
+        cp openwrt/error*.log  packages/ || true
+        echo "FIRMWARE=$PWD/packages" >> $GITHUB_ENV
+        Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
+        RANDOM=$$$(date +%s)
+        rand=$[$RANDOM % ${#Emoji[@]}]
+        echo "EMOJI=${Emoji[$rand]}" >> $GITHUB_ENV
+        if [[ $(ls -l packages/error* | grep "^-" | wc -l) -le 0 ]]; then
+           echo "DEPLOY=1" >> $GITHUB_ENV
+        fi
+        
+    - name: Create release
+      id: create_release
+      if: env.REPO_TOKEN
+      continue-on-error: true
+      run: |
+        echo -e "" >> release.txt
+
+    - name: Upload packages for release
+      uses: softprops/action-gh-release@v1
+      continue-on-error: true
+      if: env.REPO_TOKEN && env.DEPLOY
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      with:
+        files: "${{ env.FIRMWARE }}/*"
+        name: Bypass for ${{ env.MTARGET }} ${{ env.EMOJI }} ${{ env.date2 }}
+        tag_name: ${{ env.date }}_${{ env.MTARGET }}
+        body_path: release.txt
+
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 6
+        keep_minimum_runs: 1
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@master
+      continue-on-error: true
+      with:
+        keep_latest: 15
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
