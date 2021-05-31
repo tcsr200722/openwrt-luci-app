@@ -99,6 +99,7 @@ endef
 define Build/Prepare
 	$(call Build/Prepare/Default)
 	unzip $(DL_DIR)/aria2.conf -d $(PKG_BUILD_DIR)/
+	sed -i '/rpc-secret/d' $(PKG_BUILD_DIR)/aria2.conf-master/*
 endef
 
 

@@ -5,7 +5,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v2ray-core
-PKG_VERSION:=4.39.1
+PKG_VERSION:=4.39.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -122,24 +122,24 @@ config V2RAY_CTL_COMPRESS_UPX
 endmenu
 endef
 
-GEOIP_VER:=202105060017
+GEOIP_VER:=202105260213
 GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
 
 define Download/geoip
   URL:=https://github.com/v2fly/geoip/releases/download/$(GEOIP_VER)/
   URL_FILE:=geoip.dat
   FILE:=$(GEOIP_FILE)
-  HASH:=99ac29c9413a5c22327e858699a2ad782ecdbf3459a2f88505f0f9a8e5cfeba6
+  HASH:=4fc24aee62dda4f3a46196552f2183a8cb9249b772a1e4442b7cd16522fa7ebb
 endef
 
-GEOSITE_VER:=20210503160945
+GEOSITE_VER:=20210526032424
 GEOSITE_FILE:=dlc.dat.$(GEOSITE_VER)
 
 define Download/geosite
   URL:=https://github.com/v2fly/domain-list-community/releases/download/$(GEOSITE_VER)/
   URL_FILE:=dlc.dat
   FILE:=$(GEOSITE_FILE)
-  HASH:=14549ca50f78da17543e217a5e816e25b0a9f8d94158cee4b7b5e55f78da643f
+  HASH:=fd83fe6cd88aaf2391e506fc6aba2d75067df729555341c747c00290a25d323d
 endef
 
 ifneq ($(CONFIG_V2RAY_CORE_COMPRESS_GOPROXY)$(CONFIG_V2RAY_CTL_COMPRESS_GOPROXY),)

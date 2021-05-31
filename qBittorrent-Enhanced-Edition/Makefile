@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qBittorrent-Enhanced-Edition
-PKG_VERSION:=4.3.3.10
+PKG_VERSION:=4.3.5.10
 PKG_RELEASE=1
 
 STRIP:=true
@@ -56,6 +56,7 @@ define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
 	SUBMENU:=BitTorrent
+	DEPENDS:=@(TARGET_x86||TARGET_rockchip)
 	TITLE:=bittorrent client programmed in C++ / Qt
 	URL:=https://www.qbittorrent.org/
 endef
