@@ -75,8 +75,6 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(BUILD_DIR)/qbittorrent-nox $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/etc/qBittorrent
-	$(INSTALL_DATA) ./files/ipfilter.dat $(1)/etc/qBittorrent/ipfilter.dat
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
